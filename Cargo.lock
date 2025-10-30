@@ -533,6 +533,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "ephemeral-vrf-sdk"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d76375ad63cf1356600ce739c4115498585357e2dd36c579c5c0204e05f4505e"
+dependencies = [
+ "anchor-lang",
+ "borsh 1.5.7",
+ "ephemeral-vrf-sdk-vrf-macro",
+ "solana-program",
+]
+
+[[package]]
+name = "ephemeral-vrf-sdk-vrf-macro"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7c7540e04c4cf140d48f93611488d82f785a83553ea63d06a3b552397b51a975"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -751,6 +774,9 @@ name = "magic-roulette"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "ephemeral-vrf-sdk",
+ "num-derive",
+ "num-traits",
 ]
 
 [[package]]
