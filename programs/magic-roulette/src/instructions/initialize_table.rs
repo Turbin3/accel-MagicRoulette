@@ -1,6 +1,5 @@
 use anchor_lang::{
     prelude::*,
-    solana_program::native_token::LAMPORTS_PER_SOL,
     system_program::{transfer, Transfer},
 };
 
@@ -44,10 +43,8 @@ impl<'info> InitializeTable<'info> {
         minimum_bet_amount: u64,
         round_period_ts: u64,
     ) -> Result<()> {
-        // current timestamp
         let current_timestamp = Clock::get()?.unix_timestamp;
 
-        //  initialize table and round accounts
         self.table.set_inner(Table {
             admin: self.admin.key(),
             minimum_bet_amount,
@@ -59,7 +56,6 @@ impl<'info> InitializeTable<'info> {
             vault_bump: bumps.vault,
         });
 
-        // initialsing a round
         self.round.set_inner(Round {
             round_number: 1,
             pool_amount: 0,
@@ -69,19 +65,18 @@ impl<'info> InitializeTable<'info> {
             winning_bet: None,
         });
 
-        // TODO: transfer minimum system account rent to vault, to prevent it from being under-rent when winnings are first drawn
         let min_rent_lamports = Rent::get()?.minimum_balance(0);
 
-        //cpi for account creation with rent
-        let cpi_ctx = CpiContext::new(
-            self.system_program.to_account_info(),
-            Transfer {
-                from: self.admin.to_account_info(),
-                to: self.vault.to_account_info(),
-            },
-        );
-
-        transfer(cpi_ctx, min_rent_lamports)?;
+        transfer(
+            CpiContext::new(
+                self.system_program.to_account_info(),
+                Transfer {
+                    from: self.admin.to_account_info(),
+                    to: self.vault.to_account_info(),
+                },
+            ),
+            min_rent_lamports,
+        )?;
 
         Ok(())
     }
