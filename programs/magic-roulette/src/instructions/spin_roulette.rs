@@ -19,7 +19,7 @@ pub struct SpinRoulette<'info> {
     pub current_round: Account<'info, Round>,
     /// CHECK: uninitialized, will be initialized in advance_round
     #[account(
-        seeds = [ROUND_SEED, current_round.round_number.to_le_bytes().as_ref()],
+        seeds = [ROUND_SEED, (current_round.round_number + 1).to_le_bytes().as_ref()],
         bump = current_round.bump
     )]
     pub new_round: UncheckedAccount<'info>,
