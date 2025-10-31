@@ -8,4 +8,6 @@ pub enum MagicRouletteError {
     InvalidBetAmount,
     #[msg("Invalid Round Number")]
     InvalidRound,
+    #[msg("Math overflow")]
+    MathOverflow,
 }
