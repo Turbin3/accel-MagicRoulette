@@ -55,6 +55,11 @@ impl<'info> SpinRoulette<'info> {
             caller_seed: [seed; 32],
             accounts_metas: Some(vec![
                 SerializableAccountMeta {
+                    pubkey: self.table.key(),
+                    is_signer: false,
+                    is_writable: true,
+                },
+                SerializableAccountMeta {
                     pubkey: self.current_round.key(),
                     is_signer: false,
                     is_writable: true,

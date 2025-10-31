@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use num_derive::{FromPrimitive, ToPrimitive};
+use strum_macros::EnumIter;
 
 #[derive(
     AnchorSerialize,
@@ -10,6 +11,7 @@ use num_derive::{FromPrimitive, ToPrimitive};
     Clone,
     Copy,
     PartialEq,
+    EnumIter,
 )]
 pub enum BetType {
     StraightUp,

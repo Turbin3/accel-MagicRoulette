@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
-use ephemeral_vrf_sdk::consts::VRF_PROGRAM_IDENTITY;
+use ephemeral_vrf_sdk::{consts::VRF_PROGRAM_IDENTITY, rnd::random_u8_with_range};
+use strum::IntoEnumIterator;
 
-use crate::{Round, ROUND_SEED};
+use crate::{error::MagicRouletteError, BetType, Round, Table, ROUND_SEED, TABLE_SEED};
 
 #[derive(Accounts)]
 pub struct AdvanceRound<'info> {
@@ -10,6 +11,12 @@ pub struct AdvanceRound<'info> {
         address = VRF_PROGRAM_IDENTITY,
     )]
     pub vrf_program_identity: Signer<'info>,
+    #[account(
+        mut,
+        seeds = [TABLE_SEED],
+        bump = table.bump,
+    )]
+    pub table: Account<'info, Table>,
     #[account(
         mut,
         seeds = [ROUND_SEED, &current_round.round_number.to_le_bytes()],
@@ -28,10 +35,23 @@ pub struct AdvanceRound<'info> {
 }
 
 impl<'info> AdvanceRound<'info> {
-    pub fn handler(ctx: Context<AdvanceRound>, randomness: [u8; 32]) -> Result<()> {
-        // TODO: set round.winning_bet based on randomness
-        // TODO: figure out randomness logic for choosing winning bet type (how to map a random value in [u8; 32] to BetType enum)
-        // TODO: initialize new_round account
+    pub fn handler(&mut self, bumps: &AdvanceRoundBumps, randomness: [u8; 32]) -> Result<()> {
+        let rnd = random_u8_with_range(&randomness, 0, BetType::iter().count() as u8 - 1);
+        let winning_bet_type = BetType::iter()
+            .nth(rnd as usize)
+            .ok_or(MagicRouletteError::InvalidRandomness)?;
+
+        self.current_round.winning_bet = Some(winning_bet_type);
+        self.table.current_round_number += 1;
+
+        self.new_round.set_inner(Round {
+            bump: bumps.new_round,
+            is_claimed: false,
+            is_spun: false,
+            pool_amount: 0,
+            round_number: self.table.current_round_number,
+            winning_bet: None,
+        });
 
         Ok(())
     }

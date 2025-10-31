@@ -16,4 +16,6 @@ pub enum MagicRouletteError {
     InvalidRound,
     #[msg("Round has not finished yet")]
     RoundNotReadyToSpin,
+    #[msg("Unable to map randomness to valid BetType")]
+    InvalidRandomness,
 }

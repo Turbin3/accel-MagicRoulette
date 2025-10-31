@@ -33,7 +33,7 @@ pub mod magic_roulette {
     }
 
     pub fn advance_round(ctx: Context<AdvanceRound>, randomness: [u8; 32]) -> Result<()> {
-        AdvanceRound::handler(ctx, randomness)
+        ctx.accounts.handler(&ctx.bumps, randomness)
     }
 
     pub fn claim_winnings(ctx: Context<ClaimWinnings>) -> Result<()> {

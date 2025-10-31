@@ -22,3 +22,5 @@ anchor-lang = "0.31.1"
 ephemeral-vrf-sdk = { version = "0.2.0", features = ["anchor"] }
 num-derive = "0.4.2"
 num-traits = "0.2.19"
+strum = "0.27.2"
+strum_macros = "0.27.2"
