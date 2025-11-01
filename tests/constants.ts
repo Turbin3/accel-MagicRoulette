@@ -1,4 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import idl from "../target/idl/magic_roulette.json";
 
-export const MAGIC_ROULETTE_PROGRAM_ID = new PublicKey(idl.address);
+export const DEFAULT_QUEUE = new PublicKey(
+  "Cuj97ggrhhidhbu39TijNVqE74xvKJ69gDervRUXAxGh"
+);
