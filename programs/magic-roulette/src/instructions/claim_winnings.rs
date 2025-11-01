@@ -69,6 +69,10 @@ impl<'info> ClaimWinnings<'info> {
                 bet.round == round_account.key(),
                 MagicRouletteError::InvalidBetRound
             );
+            require!(
+                bet.bet_type == round.winning_bet.unwrap(),
+                MagicRouletteError::BetNotWinning
+            );
 
             round.is_claimed = true;
 

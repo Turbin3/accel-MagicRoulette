@@ -26,4 +26,6 @@ pub enum MagicRouletteError {
     InvalidBetPlayer,
     #[msg("Bet round does not match")]
     InvalidBetRound,
+    #[msg("Bet is not a winning bet")]
+    BetNotWinning,
 }
