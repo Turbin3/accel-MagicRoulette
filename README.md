@@ -42,6 +42,12 @@ git clone https://github.com/Turbin3/accel-MagicRoulette.git
 bun i
 ```
 
+3. Configure .env file
+
+```bash
+cp .env.example .env
+```
+
 #### Program
 
 1. Resync your program id
