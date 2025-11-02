@@ -18,6 +18,7 @@ pub struct SpinRoulette<'info> {
     )]
     pub table: Account<'info, Table>,
     #[account(
+        mut,
         seeds = [ROUND_SEED, current_round.round_number.to_le_bytes().as_ref()],
         bump = current_round.bump
     )]
