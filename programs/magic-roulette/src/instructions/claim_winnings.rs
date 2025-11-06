@@ -41,7 +41,7 @@ impl<'info> ClaimWinnings<'info> {
         while let (Some(round_account), Some(bet_account)) =
             (remaining_accounts.next(), remaining_accounts.next())
         {
-            let mut round = Round::try_deserialize(&mut &round_account.data.borrow()[..])?;
+            let mut round = Round::try_deserialize(&mut &round_account.data.borrow_mut()[..])?;
             let round_seeds = &[ROUND_SEED, &round.round_number.to_le_bytes(), &[round.bump]];
             let round_pda = Pubkey::create_program_address(round_seeds, &ID).unwrap();
 
@@ -50,7 +50,7 @@ impl<'info> ClaimWinnings<'info> {
                 MagicRouletteError::InvalidRound
             );
 
-            let bet = Bet::try_deserialize(&mut &bet_account.data.borrow()[..])?;
+            let bet = Bet::try_deserialize(&mut &bet_account.data.borrow_mut()[..])?;
             let player_key = player.key();
             let round_key = round_account.key();
             let bet_seeds = &[
@@ -76,6 +76,9 @@ impl<'info> ClaimWinnings<'info> {
             );
 
             round.is_claimed = true;
+
+            let mut data = round_account.try_borrow_mut_data()?;
+            round.serialize(&mut &mut data[Round::DISCRIMINATOR.len()..])?;
 
             let vault_seeds: &[&[u8]] = &[VAULT_SEED, &[ctx.accounts.table.vault_bump]];
 
