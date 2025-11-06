@@ -3,7 +3,7 @@ use anchor_lang::{
     system_program::{transfer, Transfer},
 };
 
-use crate::{Round, Table, ROUND_SEED, TABLE_SEED, VAULT_SEED};
+use crate::{error::MagicRouletteError, Round, Table, ROUND_SEED, TABLE_SEED, VAULT_SEED};
 
 #[derive(Accounts)]
 pub struct InitializeTable<'info> {
@@ -42,14 +42,18 @@ impl<'info> InitializeTable<'info> {
         minimum_bet_amount: u64,
         round_period_ts: u64,
     ) -> Result<()> {
-        let current_timestamp = Clock::get()?.unix_timestamp;
+        require!(
+            minimum_bet_amount > 0,
+            MagicRouletteError::InvalidMinimumBetAmount
+        );
+
+        let now = Clock::get()?.unix_timestamp;
 
         self.table.set_inner(Table {
             admin: self.admin.key(),
             minimum_bet_amount,
             current_round_number: 1,
-            // 90s until the next round.
-            next_round_ts: current_timestamp + round_period_ts as i64,
+            next_round_ts: now + round_period_ts as i64,
             round_period_ts,
             bump: bumps.table,
             vault_bump: bumps.vault,

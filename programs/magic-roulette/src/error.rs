@@ -26,4 +26,6 @@ pub enum MagicRouletteError {
     InvalidBetRound,
     #[msg("Bet is not a winning bet")]
     BetNotWinning,
+    #[msg("Minimum bet amount must be greater than zero")]
+    InvalidMinimumBetAmount,
 }
