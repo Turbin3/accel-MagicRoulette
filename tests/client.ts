@@ -16,9 +16,13 @@ export class MagicRouletteClient {
     this.program = program;
   }
 
-  getBetPda(player: PublicKey, round: PublicKey) {
+  getBetPda(round: PublicKey, betTypeIndex: number) {
     return PublicKey.findProgramAddressSync(
-      [Buffer.from("bet"), player.toBuffer(), round.toBuffer()],
+      [
+        Buffer.from("bet"),
+        round.toBuffer(),
+        new BN(betTypeIndex).toArrayLike(Buffer, "le", 1),
+      ],
       this.program.programId
     )[0];
   }

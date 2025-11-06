@@ -26,24 +26,26 @@ describe("magic-roulette", () => {
   const wallet = Wallet.local();
   // simulating with 12 players for 13 possible bet types
   const players = Array.from({ length: 12 }, () => Keypair.generate());
+  const playerBetIdxs: number[] = [];
 
   const tablePda = magicRouletteClient.getTablePda();
   const vaultPda = magicRouletteClient.getVaultPda();
 
+  // must follow the same order as in BetType enum
   const possibleBetTypes: BetType[] = [
-    { black: {} },
-    { column: {} },
-    { corner: {} },
-    { dozen: {} },
-    { even: {} },
-    { high: {} },
-    { line: {} },
-    { low: {} },
-    { odd: {} },
-    { red: {} },
-    { split: {} },
     { straightUp: {} },
+    { split: {} },
     { street: {} },
+    { corner: {} },
+    { line: {} },
+    { column: {} },
+    { dozen: {} },
+    { red: {} },
+    { black: {} },
+    { even: {} },
+    { odd: {} },
+    { high: {} },
+    { low: {} },
   ];
 
   beforeAll(async () => {
@@ -128,15 +130,21 @@ describe("magic-roulette", () => {
       console.log(`Placing bet for player ${i + 1}...`);
       const player = players[i];
 
-      const betPda = magicRouletteClient.getBetPda(player.publicKey, roundPda);
-      await skipBetAccIfExists(magicRouletteClient, betPda);
-
       const betType: BetType = possibleBetTypes[i % possibleBetTypes.length];
+      const betTypeIndex = possibleBetTypes.findIndex((t) => {
+        return Object.keys(t)[0] === Object.keys(betType)[0];
+      });
+
+      playerBetIdxs[i] = betTypeIndex;
+
+      const betPda = magicRouletteClient.getBetPda(roundPda, betTypeIndex);
+      await skipBetAccIfExists(magicRouletteClient, betPda);
 
       await program.methods
         .placeBet(betType, betAmount)
-        .accounts({
+        .accountsPartial({
           player: player.publicKey,
+          bet: betPda,
         })
         .signers([player])
         .rpc();
@@ -223,8 +231,8 @@ describe("magic-roulette", () => {
     await Promise.all(
       players.map(async (player, i) => {
         const betPda = magicRouletteClient.getBetPda(
-          player.publicKey,
-          currentRoundPda
+          currentRoundPda,
+          playerBetIdxs[i]
         );
         const betAcc = await magicRouletteClient.fetchProgramAccount(
           betPda,

@@ -1,10 +1,12 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
+use num_traits::ToPrimitive;
 
 use crate::error::MagicRouletteError;
 use crate::{Bet, BetType, Round, Table, BET_SEED, ROUND_SEED, TABLE_SEED, VAULT_SEED};
 
 #[derive(Accounts)]
+#[instruction(bet_type: BetType)]
 pub struct PlaceBet<'info> {
     #[account(mut)]
     pub player: Signer<'info>,
@@ -29,7 +31,11 @@ pub struct PlaceBet<'info> {
         init,
         payer = player,
         space = Bet::DISCRIMINATOR.len() + Bet::INIT_SPACE,
-        seeds = [BET_SEED, player.key().as_ref(), round.key().as_ref()],
+        seeds = [
+            BET_SEED,
+            round.key().as_ref(),
+            bet_type.to_u8().unwrap().to_le_bytes().as_ref(),
+        ],
         bump,
     )]
     pub bet: Account<'info, Bet>,

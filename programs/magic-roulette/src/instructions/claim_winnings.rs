@@ -2,6 +2,7 @@ use anchor_lang::{
     prelude::*,
     system_program::{transfer, Transfer},
 };
+use num_traits::ToPrimitive;
 
 use crate::{
     error::MagicRouletteError, utils::close, Bet, Round, Table, BET_SEED, ID, ROUND_SEED,
@@ -51,19 +52,19 @@ impl<'info> ClaimWinnings<'info> {
             );
 
             let bet = Bet::try_deserialize(&mut &bet_account.data.borrow_mut()[..])?;
-            let player_key = player.key();
             let round_key = round_account.key();
+            let bet_type_u8 = bet.bet_type.to_u8().unwrap().to_le_bytes();
             let bet_seeds = &[
                 BET_SEED,
-                player_key.as_ref(),
                 round_key.as_ref(),
+                bet_type_u8.as_ref(),
                 &[bet.bump],
             ];
             let bet_pda = Pubkey::create_program_address(bet_seeds, &ID).unwrap();
 
             require!(bet_pda == bet_account.key(), MagicRouletteError::InvalidBet);
             require!(
-                bet.player == player_key,
+                bet.player == player.key(),
                 MagicRouletteError::InvalidBetPlayer
             );
             require!(
