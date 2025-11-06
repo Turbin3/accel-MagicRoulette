@@ -11,7 +11,7 @@ pub struct Round {
     pub round_number: u64,
     /// Lamports pooled from all bets in this round.
     pub pool_amount: u64,
-    /// Boolean indicating if the round has been spun.
+    /// Boolean indicating if the round has been spun and is awaiting VRF callback.
     pub is_spun: bool,
     /// Boolean indicating if the winnings have been claimed.
     pub is_claimed: bool,
