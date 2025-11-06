@@ -7,7 +7,7 @@
     "deploy": "anchor deploy -p magic-roulette --provider.cluster d --program-keypair target/deploy/magic_roulette-keypair.json --provider.wallet magic-roulette-wallet.json",
     "idl:init": "anchor idl init $(anchor keys list | grep 'magic_roulette:' | awk '{print $2}') -f target/idl/magic_roulette.json --provider.cluster d --provider.wallet magic-roulette-wallet.json",
     "idl:upgrade": "anchor idl upgrade $(anchor keys list | grep 'magic_roulette:' | awk '{print $2}') -f target/idl/magic_roulette.json --provider.cluster d --provider.wallet magic-roulette-wallet.json",
-    "test": "bun test --timeout"
+    "test": "bun test --timeout 120000"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1"
