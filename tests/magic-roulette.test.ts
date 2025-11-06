@@ -12,6 +12,7 @@ import { MagicRouletteClient } from "./client";
 import idl from "../target/idl/magic_roulette.json";
 import { fundAccount } from "./utils";
 import { DEFAULT_QUEUE } from "./constants";
+
 describe("magic-roulette", () => {
   const provider = AnchorProvider.env();
   setProvider(provider);
@@ -27,6 +28,8 @@ describe("magic-roulette", () => {
   const vaultPda = magicRouletteClient.getVaultPda();
 
   beforeAll(async () => {
+    console.log("Funding wallets...");
+
     // fund each account used in testing
     for (const kp of [admin, player1, player2]) {
       await fundAccount(
@@ -43,10 +46,10 @@ describe("magic-roulette", () => {
       tablePda,
       "table"
     );
+
     // table is a singleton, so this test only succeeds once per program deployed on a cluster
     if (tableAcc !== null) {
       console.log("Table already initialized, skipping...");
-      console.log(tableAcc);
       return;
     }
 
@@ -63,7 +66,6 @@ describe("magic-roulette", () => {
 
     tableAcc = await magicRouletteClient.fetchProgramAccount(tablePda, "table");
 
-    console.log(tableAcc);
     expect(tableAcc.admin).toStrictEqual(admin.publicKey);
     expect(tableAcc.minimumBetAmount.toNumber()).toBe(minimumBetAmount);
     expect(tableAcc.roundPeriodTs.toNumber()).toBe(roundPeriodTs);
@@ -155,6 +157,8 @@ describe("magic-roulette", () => {
 
   afterAll(async () => {
     // defund all accounts used in testing
+    console.log("Defunding wallets...");
+
     for (const kp of [admin, player1, player2]) {
       try {
         const balance = await provider.connection.getBalance(kp.publicKey);
