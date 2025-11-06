@@ -42,7 +42,6 @@ impl<'info> AdvanceRound<'info> {
             .ok_or(MagicRouletteError::InvalidRandomness)?;
 
         self.current_round.winning_bet = Some(winning_bet_type);
-        self.current_round.is_spun = true;
         self.table.current_round_number += 1;
 
         let now = Clock::get()?.unix_timestamp;
