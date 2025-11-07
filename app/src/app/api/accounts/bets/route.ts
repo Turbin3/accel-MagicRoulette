@@ -1,6 +1,6 @@
+import { DISCRIMINATOR_SIZE } from '@/lib/constants';
 import { MAGIC_ROULETTE_CLIENT } from '@/lib/server/solana';
 import { parseBet } from '@/types/accounts';
-import { DISCRIMINATOR_SIZE } from '@coral-xyz/anchor';
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 import { NextRequest, NextResponse } from 'next/server';
 
