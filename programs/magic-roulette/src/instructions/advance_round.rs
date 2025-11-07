@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 use ephemeral_vrf_sdk::{consts::VRF_PROGRAM_IDENTITY, rnd::random_u8_with_range};
-use strum::IntoEnumIterator;
 
 use crate::{error::MagicRouletteError, BetType, Round, Table, ROUND_SEED, TABLE_SEED};
 
@@ -31,12 +30,9 @@ pub struct AdvanceRound<'info> {
 
 impl<'info> AdvanceRound<'info> {
     pub fn handler(&mut self, randomness: [u8; 32]) -> Result<()> {
-        let rnd = random_u8_with_range(&randomness, 0, BetType::iter().count() as u8 - 1);
-        let winning_bet_type = BetType::iter()
-            .nth(rnd as usize)
-            .ok_or(MagicRouletteError::InvalidRandomness)?;
+        let outcome = random_u8_with_range(&randomness, 0, BetType::MAX_OUTCOME);
 
-        self.current_round.winning_bet = Some(winning_bet_type);
+        self.current_round.outcome = Some(outcome);
         self.table.current_round_number += 1;
 
         let now = Clock::get()?.unix_timestamp;

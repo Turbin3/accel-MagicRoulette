@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
-use num_traits::ToPrimitive;
 
 use crate::error::MagicRouletteError;
 use crate::{Bet, BetType, Round, Table, BET_SEED, ROUND_SEED, TABLE_SEED, VAULT_SEED};
@@ -34,7 +33,7 @@ pub struct PlaceBet<'info> {
         seeds = [
             BET_SEED,
             round.key().as_ref(),
-            bet_type.to_u8().unwrap().to_le_bytes().as_ref(),
+            player.key().as_ref()
         ],
         bump,
     )]
@@ -60,6 +59,8 @@ impl<'info> PlaceBet<'info> {
             now < self.table.next_round_ts,
             MagicRouletteError::RoundOver
         );
+
+        require!(bet_type.is_valid(), MagicRouletteError::InvalidBetType);
 
         self.bet.set_inner(Bet {
             player: self.player.key(),

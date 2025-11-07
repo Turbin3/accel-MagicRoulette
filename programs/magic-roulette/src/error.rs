@@ -20,10 +20,6 @@ pub enum MagicRouletteError {
     InsufficientRemainingAccounts,
     #[msg("Bet does not match")]
     InvalidBet,
-    #[msg("Bet player does not match")]
-    InvalidBetPlayer,
-    #[msg("Bet round does not match")]
-    InvalidBetRound,
     #[msg("Bet is not a winning bet")]
     BetNotWinning,
     #[msg("Minimum bet amount must be greater than zero")]
@@ -34,4 +30,10 @@ pub enum MagicRouletteError {
     UnauthorizedAdmin,
     #[msg("Round is no longer accepting bets")]
     RoundOver,
+    #[msg("Round outcome is not yet available")]
+    RoundAwaitingOutcome,
+    #[msg("Vault has insufficient funds to pay out winnings")]
+    InsufficientVaultFunds,
+    #[msg("Bet type is illegal")]
+    InvalidBetType,
 }

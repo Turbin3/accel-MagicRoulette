@@ -1,7 +1,5 @@
 use anchor_lang::prelude::*;
 
-use crate::BetType;
-
 #[account]
 #[derive(InitSpace)]
 pub struct Round {
@@ -13,13 +11,9 @@ pub struct Round {
     pub pool_amount: u64,
     /// Boolean indicating if the round has been spun and is awaiting VRF callback.
     pub is_spun: bool,
-    /// Boolean indicating if the winnings have been claimed.
-    pub is_claimed: bool,
     pub bump: u8,
-    /// The winning bet type for this round after being spun.
-    ///
-    /// None if no winning bet has been determined yet.
-    pub winning_bet: Option<BetType>,
+    /// The number that won (0-36, with 37 representing 00)
+    pub outcome: Option<u8>,
 }
 
 impl Round {
@@ -28,10 +22,8 @@ impl Round {
             round_number,
             pool_amount: 0,
             is_spun: false,
-            is_claimed: false,
             bump,
-            bet_outcome: None,
-            winning_bet: None,
+            outcome: None,
         }
     }
 }
