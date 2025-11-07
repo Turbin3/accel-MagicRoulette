@@ -46,10 +46,10 @@ pub mod magic_roulette {
         ctx.accounts.handler(randomness)
     }
 
+    // different handler signature due to remaining accounts
     pub fn claim_winnings<'info>(
         ctx: Context<'_, '_, '_, 'info, ClaimWinnings<'info>>,
     ) -> Result<()> {
-        // ctx.accounts.handler()
         ClaimWinnings::handler(ctx)
     }
 }
