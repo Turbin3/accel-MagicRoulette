@@ -63,7 +63,12 @@ impl<'info> InitializeTable<'info> {
 
         self.round.set_inner(Round::new(1, bumps.round));
 
+        // transfer minimum system account rent to vault, to prevent it from being under-rent when winnings are first drawn
         let min_rent_lamports = Rent::get()?.minimum_balance(0);
+        let vault_lamports = self.vault.lamports();
+        let lamports_to_topup = min_rent_lamports
+            .checked_sub(vault_lamports)
+            .ok_or(MagicRouletteError::MathOverflow)?;
 
         transfer(
             CpiContext::new(
@@ -73,7 +78,7 @@ impl<'info> InitializeTable<'info> {
                     to: self.vault.to_account_info(),
                 },
             ),
-            min_rent_lamports,
+            lamports_to_topup,
         )?;
 
         Ok(())
