@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
     "@jup-ag/wallet-adapter": "^0.2.5",
     "@radix-ui/react-slot": "^1.2.4",
     "@solana/wallet-adapter-react": "^0.15.39",
