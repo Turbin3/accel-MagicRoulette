@@ -7,7 +7,7 @@ export function TransactionToast({
 }) {
   return (
     <div className="flex flex-col">
-      <p>{title}</p>
+      <p className="font-semibold">{title}</p>
       <a href={link} target="_blank" className="text-info underline">
         View Transaction
       </a>
