@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use anchor_lang::prelude::*;
 use ephemeral_vrf_sdk::{consts::VRF_PROGRAM_IDENTITY, rnd::random_u8_with_range};
 
@@ -15,13 +17,13 @@ pub struct AdvanceRound<'info> {
     pub table: Account<'info, Table>,
     #[account(
         mut,
-        seeds = [ROUND_SEED, &table.current_round_number.to_le_bytes()],
+        seeds = [ROUND_SEED, table.current_round_number.to_le_bytes().as_ref()],
         bump = current_round.bump,
     )]
     pub current_round: Account<'info, Round>,
     #[account(
         mut,
-        seeds = [ROUND_SEED, new_round.round_number.to_le_bytes().as_ref()],
+        seeds = [ROUND_SEED, table.current_round_number.add(1).to_le_bytes().as_ref()],
         bump = new_round.bump,
     )]
     pub new_round: Account<'info, Round>,

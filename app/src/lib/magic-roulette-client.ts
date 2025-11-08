@@ -68,17 +68,19 @@ export class MagicRouletteClient extends ProgramClient<MagicRoulette> {
 
   async spinRouletteIx({
     payer,
+    currentRound,
     newRound,
   }: {
     payer: Address;
+    currentRound: Address;
     newRound: Address;
   }): Promise<TransactionInstruction> {
     return await this.program.methods
       .spinRoulette()
-      .accounts({
+      .accountsPartial({
         payer,
+        currentRound,
         newRound,
-        oracleQueue: DEFAULT_QUEUE,
       })
       .instruction();
   }

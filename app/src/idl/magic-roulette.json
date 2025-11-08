@@ -83,8 +83,8 @@
               },
               {
                 "kind": "account",
-                "path": "new_round.round_number",
-                "account": "Round"
+                "path": "table.current_round_number.add(1)",
+                "account": "Table"
               }
             ]
           }
@@ -447,11 +447,31 @@
         },
         {
           "name": "new_round",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  111,
+                  117,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "table.current_round_number.add(1)",
+                "account": "Table"
+              }
+            ]
+          }
         },
         {
           "name": "oracle_queue",
-          "writable": true
+          "writable": true,
+          "address": "Cuj97ggrhhidhbu39TijNVqE74xvKJ69gDervRUXAxGh"
         },
         {
           "name": "program_identity",

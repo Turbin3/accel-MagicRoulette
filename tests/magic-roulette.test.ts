@@ -187,10 +187,10 @@ describe("magic-roulette", () => {
 
     await program.methods
       .spinRoulette()
-      .accounts({
+      .accountsPartial({
         payer: wallet.publicKey,
+        currentRound: currentRoundPda,
         newRound: newRoundPda,
-        oracleQueue: DEFAULT_QUEUE,
       })
       .signers([wallet.payer])
       .rpc();

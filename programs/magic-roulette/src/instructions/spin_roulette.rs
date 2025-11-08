@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use anchor_lang::prelude::*;
 use ephemeral_vrf_sdk::anchor::vrf;
 use ephemeral_vrf_sdk::consts::DEFAULT_QUEUE;
@@ -27,14 +29,14 @@ pub struct SpinRoulette<'info> {
         init,
         payer = payer,
         space = Round::DISCRIMINATOR.len() + Round::INIT_SPACE,
-        seeds = [ROUND_SEED, (current_round.round_number + 1).to_le_bytes().as_ref()],
+        seeds = [ROUND_SEED, table.current_round_number.add(1).to_le_bytes().as_ref()],
         bump,
     )]
     pub new_round: Account<'info, Round>,
     /// CHECK: MagicBlock default queue
     #[account(
         mut,
-        constraint = oracle_queue.key() == DEFAULT_QUEUE @ MagicRouletteError::InvalidQueue
+        address = DEFAULT_QUEUE @ MagicRouletteError::InvalidQueue
     )]
     pub oracle_queue: UncheckedAccount<'info>,
 }

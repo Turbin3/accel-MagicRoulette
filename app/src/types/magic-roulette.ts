@@ -89,8 +89,8 @@ export type MagicRoulette = {
               },
               {
                 "kind": "account",
-                "path": "new_round.round_number",
-                "account": "round"
+                "path": "table.current_round_number.add(1)",
+                "account": "table"
               }
             ]
           }
@@ -453,11 +453,31 @@ export type MagicRoulette = {
         },
         {
           "name": "newRound",
-          "writable": true
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  111,
+                  117,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "table.current_round_number.add(1)",
+                "account": "table"
+              }
+            ]
+          }
         },
         {
           "name": "oracleQueue",
-          "writable": true
+          "writable": true,
+          "address": "Cuj97ggrhhidhbu39TijNVqE74xvKJ69gDervRUXAxGh"
         },
         {
           "name": "programIdentity",
