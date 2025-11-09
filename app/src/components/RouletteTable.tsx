@@ -3,18 +3,18 @@
 import { BetType } from "@/types/accounts";
 import { useState } from "react";
 
+const tableNumbers = [
+  [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
+  [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
+  [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34],
+];
+
+const redNumbers = [
+  1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
+];
+
 export function RouletteTable() {
   const [selectedBets, setSelectedBets] = useState<BetType[]>([]);
-
-  const numbers = [
-    [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
-    [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
-    [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34],
-  ];
-
-  const redNumbers = [
-    1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
-  ];
 
   const getNumberColor = (num: number) => {
     if (num === 0 || num === 37) return "bg-green-600";
@@ -93,7 +93,7 @@ export function RouletteTable() {
 
           {/* Main Number Grid */}
           <div className="flex flex-col gap-1 relative">
-            {numbers.map((row, rowIdx) => {
+            {tableNumbers.map((row, rowIdx) => {
               // console.log(row, rowIdx);
               return (
                 <div key={rowIdx} className="flex gap-1 relative">
@@ -128,27 +128,27 @@ export function RouletteTable() {
                       )}
 
                       {/* Split Bets - Vertical (bottom edge) */}
-                      {rowIdx < numbers.length - 1 && (
+                      {rowIdx < tableNumbers.length - 1 && (
                         <button
                           onClick={() =>
                             addBet({
                               split: {
-                                numbers: [num, numbers[rowIdx + 1][colIdx]] as [
-                                  number,
-                                  number
-                                ],
+                                numbers: [
+                                  num,
+                                  tableNumbers[rowIdx + 1][colIdx],
+                                ] as [number, number],
                               },
                             })
                           }
                           className="absolute left-1/2 -bottom-0.5 transform -translate-x-1/2 w-8 h-2 bg-blue-300 rounded-full hover:h-3 transition-all z-1 opacity-70 hover:opacity-100"
                           data-tooltip={`Split: ${num}-${
-                            numbers[rowIdx + 1][colIdx]
+                            tableNumbers[rowIdx + 1][colIdx]
                           }`}
                         />
                       )}
 
                       {/* Corner Bets */}
-                      {rowIdx < numbers.length - 1 &&
+                      {rowIdx < tableNumbers.length - 1 &&
                         colIdx < row.length - 1 && (
                           <button
                             onClick={() =>
@@ -157,16 +157,16 @@ export function RouletteTable() {
                                   numbers: [
                                     num,
                                     row[colIdx + 1],
-                                    numbers[rowIdx + 1][colIdx],
-                                    numbers[rowIdx + 1][colIdx + 1],
+                                    tableNumbers[rowIdx + 1][colIdx],
+                                    tableNumbers[rowIdx + 1][colIdx + 1],
                                   ] as [number, number, number, number],
                                 },
                               })
                             }
                             className="absolute -right-0.5 -bottom-0.5 w-3 h-3 bg-white rounded-full hover:w-4 hover:h-4 transition-all z-1 opacity-70 hover:opacity-100"
                             data-tooltip={`Corner: ${num}-${row[colIdx + 1]}-${
-                              numbers[rowIdx + 1][colIdx]
-                            }-${numbers[rowIdx + 1][colIdx + 1]}`}
+                              tableNumbers[rowIdx + 1][colIdx]
+                            }-${tableNumbers[rowIdx + 1][colIdx + 1]}`}
                           />
                         )}
                     </div>
@@ -212,12 +212,12 @@ export function RouletteTable() {
                     addBet({
                       line: {
                         numbers: [
-                          numbers[0][col1], // Row 0, First column of pair
-                          numbers[0][col2], // Row 0, Second column of pair
-                          numbers[1][col1], // Row 1, First column of pair
-                          numbers[1][col2], // Row 1, Second column of pair
-                          numbers[2][col1], // Row 2, First column of pair
-                          numbers[2][col2], // Row 2, Second column of pair
+                          tableNumbers[0][col1], // Row 0, First column of pair
+                          tableNumbers[0][col2], // Row 0, Second column of pair
+                          tableNumbers[1][col1], // Row 1, First column of pair
+                          tableNumbers[1][col2], // Row 1, Second column of pair
+                          tableNumbers[2][col1], // Row 2, First column of pair
+                          tableNumbers[2][col2], // Row 2, Second column of pair
                         ] as [number, number, number, number, number, number],
                       },
                     })
@@ -228,7 +228,7 @@ export function RouletteTable() {
                     top: `-5%`,
                     transform: "translate(-50%, -50%)",
                   }}
-                  data-tooltip={`Line: ${numbers[0][col1]}-${numbers[0][col2]}-${numbers[1][col1]}-${numbers[1][col2]}-${numbers[2][col1]}-${numbers[2][col2]}`}
+                  data-tooltip={`Line: ${tableNumbers[0][col1]}-${tableNumbers[0][col2]}-${tableNumbers[1][col1]}-${tableNumbers[1][col2]}-${tableNumbers[2][col1]}-${tableNumbers[2][col2]}`}
                 />
               );
             })}
