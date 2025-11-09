@@ -300,26 +300,27 @@ export function RouletteTable() {
         </div>
       </div>
 
-      <div className="mt-6 flex gap-4">
-        <button
-          onClick={() => setSelectedBet(null)}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition"
-        >
-          Clear Bets
-        </button>
-      </div>
-
       {selectedBet && (
-        <div className="mt-4 bg-green-800 p-4 rounded-lg border-2 border-yellow-600 max-w-2xl">
-          <div className="font-semibold text-yellow-400 mb-2">
-            Selected Bet:
+        <>
+          <div className="mt-6 flex gap-4">
+            <button
+              onClick={() => setSelectedBet(null)}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition"
+            >
+              Clear Bets
+            </button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <div className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2">
-              <span>{formatBet()}</span>
+          <div className="mt-4 bg-green-800 p-4 rounded-lg border-2 border-yellow-600 max-w-2xl">
+            <div className="font-semibold text-yellow-400 mb-2">
+              Selected Bet:
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <div className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2">
+                <span>{formatBet()}</span>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
