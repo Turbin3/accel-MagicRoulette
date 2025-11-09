@@ -58,16 +58,30 @@ export const getExplorerLink = (
 
 export function formatDuration(seconds: number): string {
   if (seconds < 60) {
-    return `${seconds}s`;
+    return `${Math.floor(seconds)}s`;
   }
   
   if (seconds < 3600) {
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
   }
   
   const hours = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+}
+
+export function formatCountdown(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+export function timestampToMilli(ts: number): number {
+  return ts * 1000;
+}
+
+export function milliToTimestamp(ms: number): number {
+  return Math.floor(ms / 1000);
 }

@@ -14,7 +14,7 @@ type i64 = bigIntString;
 type Option<T> = T | null; 
 
 type Table = IdlAccounts<MagicRoulette>['table'];
-type Round = IdlAccounts<MagicRoulette>['round'];
+export type Round = IdlAccounts<MagicRoulette>['round'];
 type Bet = IdlAccounts<MagicRoulette>['bet'];
 export type BetType = IdlTypes<MagicRoulette>['betType'];
 
