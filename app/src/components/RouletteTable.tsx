@@ -14,24 +14,11 @@ const redNumbers = [
 ];
 
 export function RouletteTable() {
-  const [selectedBets, setSelectedBets] = useState<BetType[]>([]);
+  const [selectedBet, setSelectedBet] = useState<BetType | null>(null);
 
   const getNumberColor = (num: number) => {
     if (num === 0 || num === 37) return "bg-green-600";
     return redNumbers.includes(num) ? "bg-red-600" : "bg-black";
-  };
-
-  const addBet = (bet: BetType) => {
-    if (selectedBets.length > 0) {
-      alert("Bet already added");
-      return;
-    }
-    setSelectedBets([...selectedBets, bet]);
-    // console.log(selectedBets)
-  };
-
-  const removeBet = (index: number) => {
-    setSelectedBets(selectedBets.filter((_, i) => i !== index));
   };
 
   const formatBet = (bet: BetType) => {
@@ -57,18 +44,18 @@ export function RouletteTable() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  px-8 py-4">
-      <div className="mb-6 text-center">
+      {/* <div className="mb-6 text-center">
         <h1 className="text-4xl font-bold text-yellow-400 mb-2">
           American Roulette
         </h1>
-      </div>
+      </div> */}
 
       <div className="bg-green-700 p-6 rounded-lg shadow-2xl border-4 border-yellow-600">
         <div className="flex gap-1">
           {/* Zero and Double Zero Section */}
           <div className="flex flex-col gap-1 mr-1 relative">
             <button
-              onClick={() => addBet({ straightUp: { number: 0 } })}
+              onClick={() => setSelectedBet({ straightUp: { number: 0 } })}
               className={`${getNumberColor(
                 0
               )} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
@@ -76,7 +63,7 @@ export function RouletteTable() {
               0
             </button>
             <button
-              onClick={() => addBet({ straightUp: { number: 37 } })}
+              onClick={() => setSelectedBet({ straightUp: { number: 37 } })}
               className={`${getNumberColor(
                 37
               )} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
@@ -85,7 +72,7 @@ export function RouletteTable() {
             </button>
             {/* Five Number Bet - intersection of 0, 00, 1, 2, 3 */}
             <button
-              onClick={() => addBet({ fiveNumber: {} })}
+              onClick={() => setSelectedBet({ fiveNumber: {} })}
               className="absolute -right-1 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-400 rounded-full border border-yellow-600 hover:w-4 hover:h-4 transition-all z-10"
               data-tooltip="Five Number (0-00-1-2-3)"
             />
@@ -101,7 +88,9 @@ export function RouletteTable() {
                     <div key={num} className="relative">
                       {/* Straight Up Bet */}
                       <button
-                        onClick={() => addBet({ straightUp: { number: num } })}
+                        onClick={() =>
+                          setSelectedBet({ straightUp: { number: num } })
+                        }
                         className={`${getNumberColor(
                           num
                         )} text-white font-bold w-12 h-12 rounded border-2 border-yellow-600 hover:opacity-80 transition shownone`}
@@ -113,7 +102,7 @@ export function RouletteTable() {
                       {colIdx < row.length - 1 && (
                         <button
                           onClick={() =>
-                            addBet({
+                            setSelectedBet({
                               split: {
                                 numbers: [num, row[colIdx + 1]] as [
                                   number,
@@ -131,7 +120,7 @@ export function RouletteTable() {
                       {rowIdx < tableNumbers.length - 1 && (
                         <button
                           onClick={() =>
-                            addBet({
+                            setSelectedBet({
                               split: {
                                 numbers: [
                                   num,
@@ -152,7 +141,7 @@ export function RouletteTable() {
                         colIdx < row.length - 1 && (
                           <button
                             onClick={() =>
-                              addBet({
+                              setSelectedBet({
                                 corner: {
                                   numbers: [
                                     num,
@@ -175,7 +164,7 @@ export function RouletteTable() {
                   {/* Street Bets - Left edge of each row */}
                   <button
                     onClick={() =>
-                      addBet({
+                      setSelectedBet({
                         street: {
                           numbers: [row[0], row[1], row[2]] as [
                             number,
@@ -191,7 +180,9 @@ export function RouletteTable() {
 
                   {/* 2 to 1 Column Bets */}
                   <button
-                    onClick={() => addBet({ column: { column: rowIdx + 1 } })}
+                    onClick={() =>
+                      setSelectedBet({ column: { column: rowIdx + 1 } })
+                    }
                     className="bg-green-600 text-yellow-400 font-bold w-16 h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
                   >
                     2 to 1
@@ -209,7 +200,7 @@ export function RouletteTable() {
                 <button
                   key={`line-${buttonIdx}`}
                   onClick={() =>
-                    addBet({
+                    setSelectedBet({
                       line: {
                         numbers: [
                           tableNumbers[0][col1], // Row 0, First column of pair
@@ -240,19 +231,19 @@ export function RouletteTable() {
           <div className="w-12"></div>
           <div className="flex gap-1 flex-1">
             <button
-              onClick={() => addBet({ dozen: { dozen: 1 } })}
+              onClick={() => setSelectedBet({ dozen: { dozen: 1 } })}
               className="bg-green-600 text-yellow-400 font-bold flex-1 h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               1st 12
             </button>
             <button
-              onClick={() => addBet({ dozen: { dozen: 2 } })}
+              onClick={() => setSelectedBet({ dozen: { dozen: 2 } })}
               className="bg-green-600 text-yellow-400 font-bold flex-1 h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               2nd 12
             </button>
             <button
-              onClick={() => addBet({ dozen: { dozen: 3 } })}
+              onClick={() => setSelectedBet({ dozen: { dozen: 3 } })}
               className="bg-green-600 text-yellow-400 font-bold flex-1 h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               3rd 12
@@ -266,37 +257,37 @@ export function RouletteTable() {
           <div className="w-12"></div>
           <div className="grid grid-cols-6 gap-1 flex-1">
             <button
-              onClick={() => addBet({ low: {} })}
+              onClick={() => setSelectedBet({ low: {} })}
               className="bg-green-600 text-yellow-400 font-bold h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               1-18
             </button>
             <button
-              onClick={() => addBet({ even: {} })}
+              onClick={() => setSelectedBet({ even: {} })}
               className="bg-green-600 text-yellow-400 font-bold h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               EVEN
             </button>
             <button
-              onClick={() => addBet({ red: {} })}
+              onClick={() => setSelectedBet({ red: {} })}
               className="bg-red-600 text-white font-bold h-12 rounded border-2 border-yellow-600 hover:opacity-80 transition flex items-center justify-center"
             >
               <div className="w-6 h-6 bg-red-600 rounded-full border-2 border-white"></div>
             </button>
             <button
-              onClick={() => addBet({ black: {} })}
+              onClick={() => setSelectedBet({ black: {} })}
               className="bg-black text-white font-bold h-12 rounded border-2 border-yellow-600 hover:opacity-80 transition flex items-center justify-center"
             >
               <div className="w-6 h-6 bg-black rounded-full border-2 border-white"></div>
             </button>
             <button
-              onClick={() => addBet({ odd: {} })}
+              onClick={() => setSelectedBet({ odd: {} })}
               className="bg-green-600 text-yellow-400 font-bold h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               ODD
             </button>
             <button
-              onClick={() => addBet({ high: {} })}
+              onClick={() => setSelectedBet({ high: {} })}
               className="bg-green-600 text-yellow-400 font-bold h-12 rounded border-2 border-yellow-600 hover:bg-green-500 transition text-sm"
             >
               19-36
@@ -308,14 +299,14 @@ export function RouletteTable() {
 
       <div className="mt-6 flex gap-4">
         <button
-          onClick={() => setSelectedBets([])}
+          onClick={() => setSelectedBet(null)}
           className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition"
         >
           Clear Bets
         </button>
         <button
           onClick={() =>
-            alert("Spinning! Bets: " + JSON.stringify(selectedBets))
+            alert("Spinning! Bets: " + JSON.stringify(selectedBet))
           }
           className="bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-8 rounded-lg transition"
         >
@@ -323,26 +314,21 @@ export function RouletteTable() {
         </button>
       </div>
 
-      {selectedBets.length > 0 && (
+      {selectedBet && (
         <div className="mt-4 bg-green-800 p-4 rounded-lg border-2 border-yellow-600 max-w-2xl">
           <div className="font-semibold text-yellow-400 mb-2">
-            Selected Bets ({selectedBets.length}):
+            Selected Bets:
           </div>
           <div className="flex flex-wrap gap-2">
-            {selectedBets.map((bet, idx) => (
-              <div
-                key={idx}
-                className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2"
+            <div className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2">
+              <span>{formatBet(selectedBet)}</span>
+              <button
+                onClick={() => setSelectedBet(null)}
+                className="text-red-400 hover:text-red-300 font-bold"
               >
-                <span>{formatBet(bet)}</span>
-                <button
-                  onClick={() => removeBet(idx)}
-                  className="text-red-400 hover:text-red-300 font-bold"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+                ×
+              </button>
+            </div>
           </div>
         </div>
       )}
