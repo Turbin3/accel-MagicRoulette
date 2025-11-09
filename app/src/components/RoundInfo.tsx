@@ -3,7 +3,7 @@
 import { useTable } from "@/providers/TableProvider";
 import { Skeleton } from "./ui/skeleton";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { formatCountdown, milliToTimestamp } from "@/lib/utils";
 import { useRound } from "@/providers/RoundProvider";
 import { Button } from "./ui/button";
@@ -14,25 +14,28 @@ import { buildTx } from "@/lib/client/solana";
 import { useSettings } from "@/providers/SettingsProvider";
 import { sendTx } from "@/lib/api";
 import { toast } from "sonner";
-import { TransactionToast } from "./TransactionToast";
 import { InfoText } from "./InfoText";
+import { useTransaction } from "@/hooks/useTransaction";
 
 export function RoundInfo() {
   const { magicRouletteClient } = useProgram();
-  const { priorityFee, getTransactionLink } = useSettings();
+  const { priorityFee } = useSettings();
   const { publicKey, signTransaction } = useUnifiedWallet();
   const { connection } = useConnection();
   const { tableData, tableLoading } = useTable();
   const { lastRoundOutcome, hasRoundEnded, roundEndsInSecs } = useRound();
   const { roundData, roundLoading } = useRound();
-  const [isSendingTransaction, setIsSendingTransaction] =
-    useState<boolean>(false);
+  const {
+    isSendingTransaction,
+    setIsSendingTransaction,
+    showTransactionToast,
+  } = useTransaction();
 
   if (!tableLoading && !tableData) {
     throw new Error("Table is not initialized.");
   }
 
-  const spinRoulette = useCallback(async () => {
+  const spinRoulette = useCallback(() => {
     toast.promise(
       async () => {
         if (!publicKey || !signTransaction) {
@@ -75,15 +78,8 @@ export function RoundInfo() {
       },
       {
         loading: "Waiting for signature...",
-        success: async ({ signature }) => {
-          setIsSendingTransaction(false);
-
-          return (
-            <TransactionToast
-              title="Roulette spun!"
-              link={getTransactionLink(signature)}
-            />
-          );
+        success: ({ signature }) => {
+          return showTransactionToast("Roulette spun!", signature);
         },
         error: (err) => {
           console.error(err);
@@ -99,7 +95,8 @@ export function RoundInfo() {
     magicRouletteClient,
     priorityFee,
     signTransaction,
-    getTransactionLink,
+    setIsSendingTransaction,
+    showTransactionToast,
   ]);
 
   return (
