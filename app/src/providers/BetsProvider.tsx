@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ParsedBet } from '@/types/accounts';
-import { wrappedFetch } from '@/lib/api';
-import { createContext, ReactNode, useContext } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
+import { ParsedBet } from "@/types/accounts";
+import { wrappedFetch } from "@/lib/api";
+import { createContext, ReactNode, useContext } from "react";
+import useSWR, { KeyedMutator } from "swr";
 
 interface BetsContextType {
   betsData: ParsedBet[] | undefined;
@@ -32,19 +32,22 @@ export function BetsProvider({
     data: betsData,
     isLoading: betsLoading,
     mutate: betsMutate,
-  } = useSWR({ apiEndpoint, roundPda, player }, async ({ apiEndpoint, roundPda, player }) => {
-    const newUrl = new URL(apiEndpoint);
+  } = useSWR(
+    { apiEndpoint, roundPda, player },
+    async ({ apiEndpoint, roundPda, player }) => {
+      const newUrl = new URL(apiEndpoint);
 
-    if (roundPda) {
-      newUrl.searchParams.append('round', roundPda);
+      if (roundPda) {
+        newUrl.searchParams.append("round", roundPda);
+      }
+
+      if (player) {
+        newUrl.searchParams.append("player", player);
+      }
+
+      return (await wrappedFetch(newUrl.href)).bets as ParsedBet[];
     }
-
-    if (player) {
-      newUrl.searchParams.append('player', player);
-    }
-
-    return (await wrappedFetch(newUrl.href)).bets as ParsedBet[];
-  });
+  );
 
   return (
     <BetsContext.Provider

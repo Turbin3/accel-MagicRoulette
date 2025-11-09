@@ -1,17 +1,17 @@
-import { DISCRIMINATOR_SIZE } from '@/lib/constants';
-import { MAGIC_ROULETTE_CLIENT } from '@/lib/server/solana';
-import { boolToByte } from '@/lib/utils';
-import { parseBet } from '@/types/accounts';
-import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { NextRequest, NextResponse } from 'next/server';
+import { DISCRIMINATOR_SIZE } from "@/lib/constants";
+import { MAGIC_ROULETTE_CLIENT } from "@/lib/server/solana";
+import { boolToByte } from "@/lib/utils";
+import { parseBet } from "@/types/accounts";
+import { GetProgramAccountsFilter } from "@solana/web3.js";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  const pdas = searchParams.getAll('pda');
-  const roundPda = searchParams.get('round');
-  const player = searchParams.get('player');
-  const isClaimed = searchParams.get('isClaimed');
+  const pdas = searchParams.getAll("pda");
+  const roundPda = searchParams.get("round");
+  const player = searchParams.get("player");
+  const isClaimed = searchParams.get("isClaimed");
 
   try {
     if (!pdas.length) {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
           memcmp: {
             offset: DISCRIMINATOR_SIZE,
             bytes: player,
-            encoding: 'base58',
+            encoding: "base58",
           },
         });
       }
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
           memcmp: {
             offset: DISCRIMINATOR_SIZE + 32,
             bytes: roundPda,
-            encoding: 'base58',
+            encoding: "base58",
           },
         });
       }
@@ -41,8 +41,8 @@ export async function GET(req: NextRequest) {
         filters.push({
           memcmp: {
             offset: DISCRIMINATOR_SIZE + 32 + 32 + 8 + 1 + 7,
-            bytes: boolToByte(isClaimed.toLowerCase() === 'true'),
-            encoding: 'base64',
+            bytes: boolToByte(isClaimed.toLowerCase() === "true"),
+            encoding: "base64",
           },
         });
       }
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           bets: await MAGIC_ROULETTE_CLIENT.fetchAllProgramAccounts(
-            'bet',
+            "bet",
             parseBet,
             filters
           ),
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
         {
           bets: await MAGIC_ROULETTE_CLIENT.fetchMultipleProgramAccounts(
             pdas,
-            'bet',
+            "bet",
             parseBet
           ),
         },
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
         {
           bet: await MAGIC_ROULETTE_CLIENT.fetchProgramAccount(
             pdas[0],
-            'bet',
+            "bet",
             parseBet
           ),
         },
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
         error:
           err instanceof Error
             ? err.message
-            : 'Unable to fetch bet account(s).',
+            : "Unable to fetch bet account(s).",
       },
       {
         status: 500,

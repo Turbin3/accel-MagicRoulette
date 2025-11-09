@@ -1,43 +1,43 @@
-import { clusterApiUrl, Connection, Cluster } from '@solana/web3.js';
-import { randomUUID } from 'crypto';
-import { MagicRouletteClient } from '../magic-roulette-client';
+import { clusterApiUrl, Connection, Cluster } from "@solana/web3.js";
+import { randomUUID } from "crypto";
+import { MagicRouletteClient } from "../magic-roulette-client";
 import {
   BuildGatewayTransactionResponse,
   CuPriceRange,
   SendTransactionResponse,
-} from '@/types/transactions';
+} from "@/types/transactions";
 
 const CLUSTER: Cluster = (process.env.SOLANA_RPC_CLUSTER ??
-  'devnet') as Cluster;
+  "devnet") as Cluster;
 export const CONNECTION = new Connection(
   process.env.SOLANA_RPC_URL ?? clusterApiUrl(CLUSTER),
-  'confirmed'
+  "confirmed"
 );
 export const MAGIC_ROULETTE_CLIENT = new MagicRouletteClient(CONNECTION);
 
 export async function buildTx(
   transaction: string,
-  cuPriceRange: CuPriceRange = CuPriceRange.Low,
+  cuPriceRange: CuPriceRange = CuPriceRange.Low
 ): Promise<string> {
   const res = await fetch(
     `${process.env.GATEWAY_URL}${process.env.GATEWAY_API}`,
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         id: randomUUID(),
-        jsonrpc: '2.0',
-        method: 'buildGatewayTransaction',
+        jsonrpc: "2.0",
+        method: "buildGatewayTransaction",
         params: [
           transaction,
           {
-            encoding: 'base64',
+            encoding: "base64",
             skipSimulation: false,
             skipPriorityFee: false,
             cuPriceRange,
-            deliveryMethodType: 'rpc',
+            deliveryMethodType: "rpc",
           },
         ],
       }),
@@ -47,7 +47,7 @@ export async function buildTx(
   const data = await res.json();
 
   if (!res.ok || data.error) {
-    throw new Error(data.error?.message || 'Failed to build transaction.');
+    throw new Error(data.error?.message || "Failed to build transaction.");
   }
 
   return (data as BuildGatewayTransactionResponse).result.transaction;
@@ -59,18 +59,18 @@ export async function sendTx(
   const res = await fetch(
     `${process.env.GATEWAY_URL}${process.env.GATEWAY_API}`,
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         id: randomUUID(),
-        jsonrpc: '2.0',
-        method: 'sendTransaction',
+        jsonrpc: "2.0",
+        method: "sendTransaction",
         params: [
           transaction,
           {
-            encoding: 'base64',
+            encoding: "base64",
           },
         ],
       }),
@@ -80,7 +80,7 @@ export async function sendTx(
   const data = (await res.json()) as SendTransactionResponse;
 
   if (!res.ok || data.error) {
-    throw new Error(data.error?.message || 'Failed to send transaction.');
+    throw new Error(data.error?.message || "Failed to send transaction.");
   }
 
   return data;

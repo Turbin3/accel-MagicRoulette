@@ -1,23 +1,22 @@
 import { Cluster, VersionedTransaction } from "@solana/web3.js";
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { BN } from "@coral-xyz/anchor";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-
 export function v0TxToBase64(tx: VersionedTransaction): string {
-  return Buffer.from(tx.serialize()).toString('base64');
+  return Buffer.from(tx.serialize()).toString("base64");
 }
 
 export function boolToByte(value: boolean): string {
-  return Buffer.from([value ? 1 : 0]).toString('base64');
+  return Buffer.from([value ? 1 : 0]).toString("base64");
 }
 
 export function BNtoBase64(bn: BN): string {
-  return bn.toArrayLike(Buffer, 'le', 8).toString('base64');
+  return bn.toArrayLike(Buffer, "le", 8).toString("base64");
 }
 
 // https://github.com/solana-developers/helpers/blob/main/src/lib/explorer.ts#L20
@@ -31,7 +30,7 @@ const encodeURL = (baseUrl: string, searchParams: Record<string, string>) => {
 export const getExplorerLink = (
   linkType: "transaction" | "tx" | "address" | "block",
   id: string,
-  cluster: Cluster | "localnet" = "mainnet-beta",
+  cluster: Cluster | "localnet" = "mainnet-beta"
 ): string => {
   const searchParams: Record<string, string> = {};
   if (cluster !== "mainnet-beta") {
@@ -60,13 +59,13 @@ export function formatDuration(seconds: number): string {
   if (seconds < 60) {
     return `${Math.floor(seconds)}s`;
   }
-  
+
   if (seconds < 3600) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return secs > 0 ? `${mins}m ${secs}s` : `${mins}m`;
   }
-  
+
   const hours = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
@@ -75,7 +74,9 @@ export function formatDuration(seconds: number): string {
 export function formatCountdown(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  return `${mins.toString().padStart(2, "0")}:${secs
+    .toString()
+    .padStart(2, "0")}`;
 }
 
 export function timestampToMilli(ts: number): number {

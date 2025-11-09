@@ -7,7 +7,7 @@ export function useTime() {
     const id = setInterval(() => {
       setTime(new Date());
     }, 1000);
-    
+
     return () => clearInterval(id);
   }, []);
 

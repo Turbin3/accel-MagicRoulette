@@ -1,16 +1,24 @@
-'use client';
+"use client";
 
-import { ParsedRound, parseRound, Round } from '@/types/accounts';
-import { wrappedFetch } from '@/lib/api';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
-import { useProgram } from './ProgramProvider';
-import { useTable } from './TableProvider';
+import { ParsedRound, parseRound, Round } from "@/types/accounts";
+import { wrappedFetch } from "@/lib/api";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import useSWR, { KeyedMutator } from "swr";
+import { AccountInfo, PublicKey } from "@solana/web3.js";
+import { useProgram } from "./ProgramProvider";
+import { useTable } from "./TableProvider";
 import { useConnection } from "@jup-ag/wallet-adapter";
-import { BN } from '@coral-xyz/anchor';
-import { timestampToMilli } from '@/lib/utils';
-import { useTime } from '@/hooks/useTime';
+import { BN } from "@coral-xyz/anchor";
+import { timestampToMilli } from "@/lib/utils";
+import { useTime } from "@/hooks/useTime";
 
 interface RoundContextType {
   roundData: ParsedRound | undefined;
@@ -41,7 +49,8 @@ export function RoundProvider({
     isLoading: roundLoading,
     mutate: roundMutate,
   } = useSWR({ apiEndpoint, pda }, async ({ apiEndpoint, pda }) => {
-    return (await wrappedFetch(`${apiEndpoint}?pda=${pda}`)).round as ParsedRound;
+    return (await wrappedFetch(`${apiEndpoint}?pda=${pda}`))
+      .round as ParsedRound;
   });
   const { tableData, tableMutate } = useTable();
   const { magicRouletteClient } = useProgram();
@@ -52,18 +61,21 @@ export function RoundProvider({
   const roundEndsInSecs = useMemo(() => {
     return tableData
       ? timestampToMilli(Number(tableData.nextRoundTs)) - time.getTime()
-      : Infinity
+      : Infinity;
   }, [tableData, time]);
 
   const hasRoundEnded = roundEndsInSecs <= 0;
 
-  const handleRoundChange = useCallback(async (acc: AccountInfo<Buffer<ArrayBufferLike>>) => {
-    const round = magicRouletteClient.program.coder.accounts.decode<Round>('round', acc.data);
+  const handleRoundChange = useCallback(
+    async (acc: AccountInfo<Buffer<ArrayBufferLike>>) => {
+      const round = magicRouletteClient.program.coder.accounts.decode<Round>(
+        "round",
+        acc.data
+      );
 
-    if (!round.isSpun) {
-      // pool amount has changed
-      await roundMutate(
-        (prev) => {
+      if (!round.isSpun) {
+        // pool amount has changed
+        await roundMutate((prev) => {
           if (!prev) {
             throw new Error("Round should not be null.");
           }
@@ -72,14 +84,12 @@ export function RoundProvider({
             ...prev,
             poolAmount: round.poolAmount.toString(),
           };
-        }
-      );
-    } else if (round.outcome) {
-      // round outcome has been set
-      setLastRoundOutcome(round.outcome);
+        });
+      } else if (round.outcome) {
+        // round outcome has been set
+        setLastRoundOutcome(round.outcome);
 
-      await tableMutate(
-        (prev) => {
+        await tableMutate((prev) => {
           if (!prev) {
             throw new Error("Table should not be null.`");
           }
@@ -87,13 +97,18 @@ export function RoundProvider({
           return {
             ...prev,
             // changing currentRoundNumber will destroy and render a new RoundProvider
-            currentRoundNumber: (Number(prev.currentRoundNumber) + 1).toString(),
-            nextRoundTs: (Number(prev.nextRoundTs) + Number(prev.roundPeriodTs)).toString(),
-          }
-        }
-      );
-    }
-  }, [magicRouletteClient, tableMutate, roundMutate]);
+            currentRoundNumber: (
+              Number(prev.currentRoundNumber) + 1
+            ).toString(),
+            nextRoundTs: (
+              Number(prev.nextRoundTs) + Number(prev.roundPeriodTs)
+            ).toString(),
+          };
+        });
+      }
+    },
+    [magicRouletteClient, tableMutate, roundMutate]
+  );
 
   // initial fetch of last round outcome
   useEffect(() => {
@@ -101,7 +116,11 @@ export function RoundProvider({
       if (tableData && lastRoundOutcome === null) {
         const lastRoundNumber = new BN(tableData.currentRoundNumber).subn(1);
         const lastRoundPda = magicRouletteClient.getRoundPda(lastRoundNumber);
-        const lastRoundAcc = await magicRouletteClient.fetchProgramAccount(lastRoundPda, "round", parseRound);
+        const lastRoundAcc = await magicRouletteClient.fetchProgramAccount(
+          lastRoundPda,
+          "round",
+          parseRound
+        );
 
         if (!lastRoundAcc) {
           throw new Error("Last round account not found.");
@@ -110,16 +129,17 @@ export function RoundProvider({
         setLastRoundOutcome(lastRoundAcc.outcome);
       }
     })();
-  }, [tableData, magicRouletteClient, lastRoundOutcome])
+  }, [tableData, magicRouletteClient, lastRoundOutcome]);
 
   useEffect(() => {
-    const id = connection.onAccountChange(new PublicKey(pda), (acc) => handleRoundChange(acc));
+    const id = connection.onAccountChange(new PublicKey(pda), (acc) =>
+      handleRoundChange(acc)
+    );
 
     return () => {
       connection.removeAccountChangeListener(id);
-    }
+    };
   }, [connection, roundData, handleRoundChange, pda]);
-
 
   return (
     <RoundContext.Provider

@@ -1,6 +1,6 @@
-import { BN, IdlAccounts, IdlTypes } from '@coral-xyz/anchor';
-import { MagicRoulette } from './magic-roulette';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { BN, IdlAccounts, IdlTypes } from "@coral-xyz/anchor";
+import { MagicRoulette } from "./magic-roulette";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
 
 // Denotes a bigint serialized as a string, JavaScript cannot natively represent 2^64-1
 export type bigIntString = string;
@@ -11,12 +11,12 @@ type u32 = number;
 type u64 = bigIntString;
 type i32 = number;
 type i64 = bigIntString;
-type Option<T> = T | null; 
+type Option<T> = T | null;
 
-type Table = IdlAccounts<MagicRoulette>['table'];
-export type Round = IdlAccounts<MagicRoulette>['round'];
-type Bet = IdlAccounts<MagicRoulette>['bet'];
-export type BetType = IdlTypes<MagicRoulette>['betType'];
+type Table = IdlAccounts<MagicRoulette>["table"];
+export type Round = IdlAccounts<MagicRoulette>["round"];
+type Bet = IdlAccounts<MagicRoulette>["bet"];
+export type BetType = IdlTypes<MagicRoulette>["betType"];
 
 export interface ParsedProgramAccount {
   publicKey: string;
@@ -47,7 +47,7 @@ export interface ParsedBet extends ParsedProgramAccount {
 
 function parsePublicKey(field: PublicKey | null): string {
   return !field || field.equals(SystemProgram.programId)
-    ? ''
+    ? ""
     : field.toBase58();
 }
 
@@ -65,7 +65,7 @@ export function parseTable({
   minimumBetAmount,
   nextRoundTs,
   roundPeriodTs,
-}: Table): Omit<ParsedTable, 'publicKey'> {
+}: Table): Omit<ParsedTable, "publicKey"> {
   return {
     admin: parsePublicKey(admin),
     currentRoundNumber: parseBN(currentRoundNumber),
@@ -80,7 +80,7 @@ export function parseRound({
   poolAmount,
   roundNumber,
   outcome,
-}: Round): Omit<ParsedRound, 'publicKey'> {
+}: Round): Omit<ParsedRound, "publicKey"> {
   return {
     isSpun,
     poolAmount: parseBN(poolAmount),
@@ -95,7 +95,7 @@ export function parseBet({
   player,
   round,
   isClaimed,
-}: Bet): Omit<ParsedBet, 'publicKey'> {
+}: Bet): Omit<ParsedBet, "publicKey"> {
   return {
     amount: parseBN(amount),
     betType,

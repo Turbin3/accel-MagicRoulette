@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ParsedBet } from '@/types/accounts';
-import { wrappedFetch } from '@/lib/api';
-import { createContext, ReactNode, useContext } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
+import { ParsedBet } from "@/types/accounts";
+import { wrappedFetch } from "@/lib/api";
+import { createContext, ReactNode, useContext } from "react";
+import useSWR, { KeyedMutator } from "swr";
 
 interface BetContextType {
   betData: ParsedBet | undefined;

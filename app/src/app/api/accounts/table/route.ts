@@ -1,6 +1,6 @@
-import { MAGIC_ROULETTE_CLIENT } from '@/lib/server/solana';
-import { parseTable } from '@/types/accounts';
-import { NextResponse } from 'next/server';
+import { MAGIC_ROULETTE_CLIENT } from "@/lib/server/solana";
+import { parseTable } from "@/types/accounts";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -8,7 +8,7 @@ export async function GET() {
       {
         table: await MAGIC_ROULETTE_CLIENT.fetchProgramAccount(
           MAGIC_ROULETTE_CLIENT.getTablePda(),
-          'table',
+          "table",
           parseTable
         ),
       },
@@ -22,9 +22,7 @@ export async function GET() {
     return NextResponse.json(
       {
         error:
-          err instanceof Error
-            ? err.message
-            : 'Unable to fetch table account.',
+          err instanceof Error ? err.message : "Unable to fetch table account.",
       },
       {
         status: 500,

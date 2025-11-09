@@ -1,4 +1,4 @@
-import { ParsedProgramAccount } from '@/types/accounts';
+import { ParsedProgramAccount } from "@/types/accounts";
 import {
   AccountNamespace,
   Address,
@@ -6,9 +6,9 @@ import {
   Idl,
   IdlAccounts,
   Program,
-} from '@coral-xyz/anchor';
-import { GetProgramAccountsFilter } from '@solana/web3.js';
-import { Connection } from '@solana/web3.js';
+} from "@coral-xyz/anchor";
+import { GetProgramAccountsFilter } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 
 export class ProgramClient<I extends Idl> {
   connection: Connection;
@@ -28,11 +28,11 @@ export class ProgramClient<I extends Idl> {
 
   async fetchProgramAccount<
     T extends keyof AccountNamespace<I>,
-    R extends ParsedProgramAccount,
+    R extends ParsedProgramAccount
   >(
     pda: Address,
     accountName: T,
-    parser: (acc: IdlAccounts<I>[T]) => Omit<R, 'publicKey'>
+    parser: (acc: IdlAccounts<I>[T]) => Omit<R, "publicKey">
   ): Promise<R | null> {
     const acc = await this.program.account[accountName].fetchNullable(pda);
 
@@ -43,11 +43,11 @@ export class ProgramClient<I extends Idl> {
 
   async fetchMultipleProgramAccounts<
     T extends keyof AccountNamespace<I>,
-    R extends ParsedProgramAccount,
+    R extends ParsedProgramAccount
   >(
     pdas: Address[],
     accountName: T,
-    parser: (acc: IdlAccounts<I>[T]) => Omit<R, 'publicKey'>
+    parser: (acc: IdlAccounts<I>[T]) => Omit<R, "publicKey">
   ): Promise<(R | null)[]> {
     const accs = await this.program.account[accountName].fetchMultiple(pdas);
 
@@ -60,10 +60,10 @@ export class ProgramClient<I extends Idl> {
 
   async fetchAllProgramAccounts<
     T extends keyof AccountNamespace<I>,
-    R extends ParsedProgramAccount,
+    R extends ParsedProgramAccount
   >(
     accountName: T,
-    parser: (acc: IdlAccounts<I>[T]) => Omit<R, 'publicKey'>,
+    parser: (acc: IdlAccounts<I>[T]) => Omit<R, "publicKey">,
     filters: GetProgramAccountsFilter[] = []
   ): Promise<R[]> {
     const accs = await this.program.account[accountName].all(filters);

@@ -13,5 +13,5 @@ export function Header() {
       </Link>
       <UnifiedWalletButton />
     </header>
-  )
+  );
 }

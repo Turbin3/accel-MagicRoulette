@@ -1,5 +1,5 @@
-import { CONNECTION, sendTx } from '@/lib/server/solana';
-import { NextRequest, NextResponse } from 'next/server';
+import { CONNECTION, sendTx } from "@/lib/server/solana";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
     if (!transaction) {
       return NextResponse.json(
-        { error: 'Transaction is required.' },
+        { error: "Transaction is required." },
         { status: 400 }
       );
     }
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     const signature = res.result!;
-    await CONNECTION.confirmTransaction(signature, 'confirmed');
+    await CONNECTION.confirmTransaction(signature, "confirmed");
     return NextResponse.json({ signature });
   } catch (err) {
     console.error(err);
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          err instanceof Error ? err.message : 'Failed to send transaction.',
+          err instanceof Error ? err.message : "Failed to send transaction.",
       },
       { status: 500 }
     );

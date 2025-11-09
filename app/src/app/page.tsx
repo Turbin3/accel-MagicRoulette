@@ -16,7 +16,7 @@ function Main() {
       <TableInfo />
       <RoundInfo />
     </section>
-  )
+  );
 }
 
 export default function Page() {
@@ -25,16 +25,24 @@ export default function Page() {
   const { tableData, tableLoading } = useTable();
 
   if (tableLoading) {
-    return <section className="flex flex-col justify-center items-center flex-1">
-      <Spinner className="size-10" />
-    </section>;
+    return (
+      <section className="flex flex-col justify-center items-center flex-1">
+        <Spinner className="size-10" />
+      </section>
+    );
   }
 
-  return tableData && (
-    <RoundProvider pda={magicRouletteClient.getRoundPda(new BN(Number(tableData.currentRoundNumber))).toBase58()}>
-      <BetsProvider player={publicKey ? publicKey.toBase58() : undefined}>
-        <Main />
-      </BetsProvider>
-    </RoundProvider>
-  )
+  return (
+    tableData && (
+      <RoundProvider
+        pda={magicRouletteClient
+          .getRoundPda(new BN(Number(tableData.currentRoundNumber)))
+          .toBase58()}
+      >
+        <BetsProvider player={publicKey ? publicKey.toBase58() : undefined}>
+          <Main />
+        </BetsProvider>
+      </RoundProvider>
+    )
+  );
 }

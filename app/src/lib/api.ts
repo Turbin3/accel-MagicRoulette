@@ -4,7 +4,7 @@ import { CuPriceRange } from "@/types/transactions";
 
 export async function wrappedFetch(
   url: string,
-  method: string = 'GET',
+  method: string = "GET",
   body: any = null
 ): Promise<any> {
   const res = await fetch(url, {
@@ -22,20 +22,20 @@ export async function wrappedFetch(
 
 export async function optimizeTx(
   tx: VersionedTransaction,
-  cuPriceRange: CuPriceRange,
+  cuPriceRange: CuPriceRange
 ): Promise<VersionedTransaction> {
-  const data = await wrappedFetch('/api/transaction/build', 'POST', {
+  const data = await wrappedFetch("/api/transaction/build", "POST", {
     transaction: v0TxToBase64(tx),
     cuPriceRange,
   });
 
   return VersionedTransaction.deserialize(
-    Buffer.from(data.transaction, 'base64')
+    Buffer.from(data.transaction, "base64")
   );
 }
 
 export async function sendTx(tx: VersionedTransaction): Promise<string> {
-  const data = await wrappedFetch('/api/transaction/send', 'POST', {
+  const data = await wrappedFetch("/api/transaction/send", "POST", {
     transaction: v0TxToBase64(tx),
   });
 

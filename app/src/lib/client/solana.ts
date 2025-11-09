@@ -1,9 +1,17 @@
-import { PublicKey, VersionedTransaction, TransactionMessage, TransactionInstruction, AddressLookupTableAccount, Connection, Cluster } from '@solana/web3.js';
-import { CuPriceRange } from '@/types/transactions';
-import { optimizeTx } from '../api';
+import {
+  PublicKey,
+  VersionedTransaction,
+  TransactionMessage,
+  TransactionInstruction,
+  AddressLookupTableAccount,
+  Connection,
+  Cluster,
+} from "@solana/web3.js";
+import { CuPriceRange } from "@/types/transactions";
+import { optimizeTx } from "../api";
 
 export const CLUSTER: Cluster = (process.env.NEXT_PUBLIC_SOLANA_RPC_CLUSTER ??
-  'devnet') as Cluster;
+  "devnet") as Cluster;
 
 export async function getALTs(
   connection: Connection,
@@ -29,7 +37,7 @@ export async function buildTx(
   instructions: TransactionInstruction[],
   payer: PublicKey,
   lookupTables: AddressLookupTableAccount[] = [],
-  cuPriceRange: CuPriceRange = CuPriceRange.Low,
+  cuPriceRange: CuPriceRange = CuPriceRange.Low
 ): Promise<VersionedTransaction> {
   const messageV0 = new TransactionMessage({
     payerKey: payer,

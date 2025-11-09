@@ -1,6 +1,6 @@
-import { MagicRouletteClient } from '@/lib/magic-roulette-client';
-import { useConnection } from '@jup-ag/wallet-adapter';
-import { createContext, ReactNode, useContext, useMemo } from 'react';
+import { MagicRouletteClient } from "@/lib/magic-roulette-client";
+import { useConnection } from "@jup-ag/wallet-adapter";
+import { createContext, ReactNode, useContext, useMemo } from "react";
 
 interface ProgramContextType {
   magicRouletteClient: MagicRouletteClient;

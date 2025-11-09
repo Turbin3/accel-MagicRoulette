@@ -25,7 +25,8 @@ export function RoundInfo() {
   const { tableData, tableLoading } = useTable();
   const { lastRoundOutcome, hasRoundEnded, roundEndsInSecs } = useRound();
   const { roundData, roundLoading } = useRound();
-  const [isSendingTransaction, setIsSendingTransaction] = useState<boolean>(false);
+  const [isSendingTransaction, setIsSendingTransaction] =
+    useState<boolean>(false);
 
   if (!tableLoading && !tableData) {
     throw new Error("Table is not initialized.");
@@ -44,27 +45,33 @@ export function RoundInfo() {
 
         setIsSendingTransaction(true);
 
-        const currentRoundPda = magicRouletteClient.getRoundPda(new BN(tableData.currentRoundNumber));
-        const newRoundPda = magicRouletteClient.getRoundPda(new BN(tableData.currentRoundNumber).addn(1));
+        const currentRoundPda = magicRouletteClient.getRoundPda(
+          new BN(tableData.currentRoundNumber)
+        );
+        const newRoundPda = magicRouletteClient.getRoundPda(
+          new BN(tableData.currentRoundNumber).addn(1)
+        );
 
         let tx = await buildTx(
           connection,
-          [await magicRouletteClient.spinRouletteIx({
-            payer: publicKey,
-            currentRound: currentRoundPda,
-            newRound: newRoundPda,
-          })],
+          [
+            await magicRouletteClient.spinRouletteIx({
+              payer: publicKey,
+              currentRound: currentRoundPda,
+              newRound: newRoundPda,
+            }),
+          ],
           publicKey,
           [],
-          priorityFee,
+          priorityFee
         );
 
         tx = await signTransaction(tx);
         const signature = await sendTx(tx);
 
         return {
-          signature
-        }
+          signature,
+        };
       },
       {
         loading: "Waiting for signature...",
@@ -76,16 +83,24 @@ export function RoundInfo() {
               title="Roulette spun!"
               link={getTransactionLink(signature)}
             />
-          )
+          );
         },
         error: (err) => {
           console.error(err);
           setIsSendingTransaction(false);
-          return err.message || 'Something went wrong.';
+          return err.message || "Something went wrong.";
         },
       }
-    )
-  }, [publicKey, tableData, connection, magicRouletteClient, priorityFee, signTransaction, getTransactionLink]);
+    );
+  }, [
+    publicKey,
+    tableData,
+    connection,
+    magicRouletteClient,
+    priorityFee,
+    signTransaction,
+    getTransactionLink,
+  ]);
 
   return (
     <section className="flex flex-col gap-4 p-4 border border-gray-300 rounded-md">
@@ -95,28 +110,42 @@ export function RoundInfo() {
           <p className="text-start">Current Round:</p>
           {tableLoading ? (
             <Skeleton className="w-8 h-4" />
-          ) : tableData && (
-            <span className="text-end">{tableData.currentRoundNumber}</span>
+          ) : (
+            tableData && (
+              <span className="text-end">{tableData.currentRoundNumber}</span>
+            )
           )}
         </InfoText>
         <InfoText>
           <p className="text-start">Pool Amount:</p>
           {roundLoading ? (
             <Skeleton className="w-24 h-4" />
-          ) : roundData && (
-            <span className="text-end">{Number(roundData.poolAmount) / LAMPORTS_PER_SOL} SOL</span>
+          ) : (
+            roundData && (
+              <span className="text-end">
+                {Number(roundData.poolAmount) / LAMPORTS_PER_SOL} SOL
+              </span>
+            )
           )}
         </InfoText>
         <InfoText>
           <p className="text-start">Last Round Outcome:</p>
-          <span className="text-end">{lastRoundOutcome !== null ? lastRoundOutcome : "-"}</span>
+          <span className="text-end">
+            {lastRoundOutcome !== null ? lastRoundOutcome : "-"}
+          </span>
         </InfoText>
       </div>
-      <Button className="cursor-pointer" onClick={spinRoulette} disabled={!tableData || isSendingTransaction || !hasRoundEnded}>
+      <Button
+        className="cursor-pointer"
+        onClick={spinRoulette}
+        disabled={!tableData || isSendingTransaction || !hasRoundEnded}
+      >
         {hasRoundEnded
-            ? 'Spin Roulette'
-            : `Round ends in ${formatCountdown(milliToTimestamp(roundEndsInSecs))}`}
+          ? "Spin Roulette"
+          : `Round ends in ${formatCountdown(
+              milliToTimestamp(roundEndsInSecs)
+            )}`}
       </Button>
     </section>
-  )
+  );
 }

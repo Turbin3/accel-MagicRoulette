@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ParsedRound } from '@/types/accounts';
-import { wrappedFetch } from '@/lib/api';
-import { createContext, ReactNode, useContext } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
+import { ParsedRound } from "@/types/accounts";
+import { wrappedFetch } from "@/lib/api";
+import { createContext, ReactNode, useContext } from "react";
+import useSWR, { KeyedMutator } from "swr";
 
 interface RoundsContextType {
   roundsData: ParsedRound[] | undefined;
@@ -34,23 +34,26 @@ export function RoundsProvider({
     data: roundsData,
     isLoading: roundsLoading,
     mutate: roundsMutate,
-  } = useSWR({ apiEndpoint, roundNumber, isSpun, isClaimed }, async ({ apiEndpoint, roundNumber, isSpun, isClaimed }) => {
-    const newUrl = new URL(apiEndpoint);
+  } = useSWR(
+    { apiEndpoint, roundNumber, isSpun, isClaimed },
+    async ({ apiEndpoint, roundNumber, isSpun, isClaimed }) => {
+      const newUrl = new URL(apiEndpoint);
 
-    if (roundNumber) {
-      newUrl.searchParams.append('roundNumber', roundNumber.toString());
+      if (roundNumber) {
+        newUrl.searchParams.append("roundNumber", roundNumber.toString());
+      }
+
+      if (isSpun) {
+        newUrl.searchParams.append("isSpun", isSpun.toString());
+      }
+
+      if (isClaimed) {
+        newUrl.searchParams.append("isClaimed", isClaimed.toString());
+      }
+
+      return (await wrappedFetch(newUrl.href)).rounds as ParsedRound[];
     }
-
-    if (isSpun) {
-      newUrl.searchParams.append('isSpun', isSpun.toString());
-    }
-
-    if (isClaimed) {
-      newUrl.searchParams.append('isClaimed', isClaimed.toString());
-    }
-
-    return (await wrappedFetch(newUrl.href)).rounds as ParsedRound[];
-  });
+  );
 
   return (
     <RoundsContext.Provider

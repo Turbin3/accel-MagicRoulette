@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
     if (!transaction) {
       return NextResponse.json(
-        { error: 'Transaction is required.' },
+        { error: "Transaction is required." },
         { status: 400 }
       );
     }
@@ -21,9 +21,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          err instanceof Error
-            ? err.message
-            : 'Failed to build transaction.',
+          err instanceof Error ? err.message : "Failed to build transaction.",
       },
       { status: 500 }
     );

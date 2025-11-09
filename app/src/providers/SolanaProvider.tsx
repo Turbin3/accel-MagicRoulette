@@ -1,15 +1,18 @@
-'use client';
+"use client";
 
-import { UnifiedWalletProvider, ConnectionProvider } from '@jup-ag/wallet-adapter';
-import { ReactNode } from 'react';
-import { CLUSTER } from '@/lib/client/solana';
-import { toast } from 'sonner';
-import { RpcType, useSettings } from './SettingsProvider';
-import { clusterApiUrl } from '@solana/web3.js';
+import {
+  UnifiedWalletProvider,
+  ConnectionProvider,
+} from "@jup-ag/wallet-adapter";
+import { ReactNode } from "react";
+import { CLUSTER } from "@/lib/client/solana";
+import { toast } from "sonner";
+import { RpcType, useSettings } from "./SettingsProvider";
+import { clusterApiUrl } from "@solana/web3.js";
 
 const metadata = {
-  name: 'Magic Roulette',
-  description: 'Perpetual roulette game on Solana',
+  name: "Magic Roulette",
+  description: "Perpetual roulette game on Solana",
   url: process.env.NEXT_PUBLIC_FRONTEND_BASE_URL as string,
   iconUrls: [`${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}/favicon.ico`],
 };
@@ -25,9 +28,9 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
       endpoint={
         rpcType === RpcType.Default
           ? defaultEndpoint
-          : customRpcUrl !== ''
-            ? customRpcUrl
-            : defaultEndpoint
+          : customRpcUrl !== ""
+          ? customRpcUrl
+          : defaultEndpoint
       }
     >
       <UnifiedWalletProvider
@@ -54,9 +57,9 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
             },
           },
           walletlistExplanation: {
-            href: 'https://station.jup.ag/docs/old/additional-topics/wallet-list',
+            href: "https://station.jup.ag/docs/old/additional-topics/wallet-list",
           },
-          theme: 'jupiter',
+          theme: "jupiter",
         }}
       >
         {children}

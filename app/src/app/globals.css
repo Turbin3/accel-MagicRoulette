@@ -45,15 +45,15 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklab(98.56% 0.001 0.00);
-  --foreground: oklab(16.50% 0.002 0.00);
+  --background: oklab(98.56% 0.001 0);
+  --foreground: oklab(16.5% 0.002 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklab(62.74% 0.064 0.05);
   --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklab(78.00% 0.050 0.04);
+  --secondary: oklab(78% 0.05 0.04);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
@@ -79,8 +79,8 @@
 }
 
 .dark {
-  --background: oklab(11.61% 0.001 0.00);
-  --foreground: oklab(95.29% 0.001 0.00);
+  --background: oklab(11.61% 0.001 0);
+  --foreground: oklab(95.29% 0.001 0);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
@@ -120,7 +120,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 button::after {
   content: attr(data-tooltip); /* Get content from data-tooltip */

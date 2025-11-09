@@ -17,7 +17,7 @@ export type SendTransactionResponse = {
 };
 
 export enum CuPriceRange {
-  Low = 'low',
-  Median = 'median',
-  High = 'high',
-} 
+  Low = "low",
+  Median = "median",
+  High = "high",
+}

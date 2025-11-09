@@ -1,28 +1,29 @@
-'use client'
+"use client";
 
-import { BetType } from '@/types/accounts';
-import { useState } from 'react';
+import { BetType } from "@/types/accounts";
+import { useState } from "react";
 
 export function AmericanRoulette() {
   const [selectedBets, setSelectedBets] = useState<BetType[]>([]);
 
-
   const numbers = [
     [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
     [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35],
-    [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+    [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34],
   ];
 
-  const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+  const redNumbers = [
+    1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
+  ];
 
   const getNumberColor = (num: number) => {
-    if (num === 0 || num === 37) return 'bg-green-600';
-    return redNumbers.includes(num) ? 'bg-red-600' : 'bg-black';
+    if (num === 0 || num === 37) return "bg-green-600";
+    return redNumbers.includes(num) ? "bg-red-600" : "bg-black";
   };
 
   const addBet = (bet: BetType) => {
     if (selectedBets.length > 0) {
-      alert("Bet already added")
+      alert("Bet already added");
       return;
     }
     setSelectedBets([...selectedBets, bet]);
@@ -34,27 +35,32 @@ export function AmericanRoulette() {
   };
 
   const formatBet = (bet: BetType) => {
-    if ('straightUp' in bet) return `Straight: ${bet.straightUp?.number === 37 ? '00' : bet.straightUp?.number}`;
-    if ('split' in bet) return `Split: ${bet.split?.numbers?.join('-')}`;
-    if ('street' in bet) return `Street: ${bet.street?.numbers?.join('-')}`;
-    if ('corner' in bet) return `Corner: ${bet.corner?.numbers?.join('-')}`;
-    if ('fiveNumber' in bet) return 'Five Number (0-00-1-2-3)';
-    if ('line' in bet) return `Line: ${bet.line?.numbers?.join('-')}`;
-    if ('column' in bet) return `Column ${bet.column?.column}`;
-    if ('dozen' in bet) return `Dozen ${bet.dozen?.dozen}`;
-    if ('red' in bet) return 'Red';
-    if ('black' in bet) return 'Black';
-    if ('even' in bet) return 'Even';
-    if ('odd' in bet) return 'Odd';
-    if ('high' in bet) return 'High (19-36)';
-    if ('low' in bet) return 'Low (1-18)';
-    return 'Unknown bet type';
+    if ("straightUp" in bet)
+      return `Straight: ${
+        bet.straightUp?.number === 37 ? "00" : bet.straightUp?.number
+      }`;
+    if ("split" in bet) return `Split: ${bet.split?.numbers?.join("-")}`;
+    if ("street" in bet) return `Street: ${bet.street?.numbers?.join("-")}`;
+    if ("corner" in bet) return `Corner: ${bet.corner?.numbers?.join("-")}`;
+    if ("fiveNumber" in bet) return "Five Number (0-00-1-2-3)";
+    if ("line" in bet) return `Line: ${bet.line?.numbers?.join("-")}`;
+    if ("column" in bet) return `Column ${bet.column?.column}`;
+    if ("dozen" in bet) return `Dozen ${bet.dozen?.dozen}`;
+    if ("red" in bet) return "Red";
+    if ("black" in bet) return "Black";
+    if ("even" in bet) return "Even";
+    if ("odd" in bet) return "Odd";
+    if ("high" in bet) return "High (19-36)";
+    if ("low" in bet) return "Low (1-18)";
+    return "Unknown bet type";
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  px-8 py-4">
       <div className="mb-6 text-center">
-        <h1 className="text-4xl font-bold text-yellow-400 mb-2">American Roulette</h1>
+        <h1 className="text-4xl font-bold text-yellow-400 mb-2">
+          American Roulette
+        </h1>
       </div>
 
       <div className="bg-green-700 p-6 rounded-lg shadow-2xl border-4 border-yellow-600">
@@ -63,13 +69,17 @@ export function AmericanRoulette() {
           <div className="flex flex-col gap-1 mr-1 relative">
             <button
               onClick={() => addBet({ straightUp: { number: 0 } })}
-              className={`${getNumberColor(0)} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
+              className={`${getNumberColor(
+                0
+              )} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
             >
               0
             </button>
             <button
               onClick={() => addBet({ straightUp: { number: 37 } })}
-              className={`${getNumberColor(37)} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
+              className={`${getNumberColor(
+                37
+              )} text-white font-bold w-12 h-28 rounded border-2 border-yellow-600 hover:opacity-80 transition`}
             >
               00
             </button>
@@ -92,7 +102,9 @@ export function AmericanRoulette() {
                       {/* Straight Up Bet */}
                       <button
                         onClick={() => addBet({ straightUp: { number: num } })}
-                        className={`${getNumberColor(num)} text-white font-bold w-12 h-12 rounded border-2 border-yellow-600 hover:opacity-80 transition shownone`}
+                        className={`${getNumberColor(
+                          num
+                        )} text-white font-bold w-12 h-12 rounded border-2 border-yellow-600 hover:opacity-80 transition shownone`}
                       >
                         {num}
                       </button>
@@ -100,7 +112,16 @@ export function AmericanRoulette() {
                       {/* Split Bets - Horizontal (right edge) */}
                       {colIdx < row.length - 1 && (
                         <button
-                          onClick={() => addBet({ split: { numbers: [num, row[colIdx + 1]] as [number, number] } })}
+                          onClick={() =>
+                            addBet({
+                              split: {
+                                numbers: [num, row[colIdx + 1]] as [
+                                  number,
+                                  number
+                                ],
+                              },
+                            })
+                          }
                           className="absolute -right-0.5 top-1/2 transform -translate-y-1/2 w-2 h-8 bg-green-400 rounded-full hover:w-3 transition-all z-1 opacity-70 hover:opacity-100"
                           data-tooltip={`Split: ${num}-${row[colIdx + 1]}`}
                         />
@@ -109,30 +130,61 @@ export function AmericanRoulette() {
                       {/* Split Bets - Vertical (bottom edge) */}
                       {rowIdx < numbers.length - 1 && (
                         <button
-                          onClick={() => addBet({ split: { numbers: [num, numbers[rowIdx + 1][colIdx]] as [number, number] } })}
+                          onClick={() =>
+                            addBet({
+                              split: {
+                                numbers: [num, numbers[rowIdx + 1][colIdx]] as [
+                                  number,
+                                  number
+                                ],
+                              },
+                            })
+                          }
                           className="absolute left-1/2 -bottom-0.5 transform -translate-x-1/2 w-8 h-2 bg-blue-300 rounded-full hover:h-3 transition-all z-1 opacity-70 hover:opacity-100"
-                          data-tooltip={`Split: ${num}-${numbers[rowIdx + 1][colIdx]}`}
+                          data-tooltip={`Split: ${num}-${
+                            numbers[rowIdx + 1][colIdx]
+                          }`}
                         />
                       )}
 
                       {/* Corner Bets */}
-                      {rowIdx < numbers.length - 1 && colIdx < row.length - 1 && (
-                        <button
-                          onClick={() => addBet({
-                            corner: {
-                              numbers: [num, row[colIdx + 1], numbers[rowIdx + 1][colIdx], numbers[rowIdx + 1][colIdx + 1]] as [number, number, number, number]
+                      {rowIdx < numbers.length - 1 &&
+                        colIdx < row.length - 1 && (
+                          <button
+                            onClick={() =>
+                              addBet({
+                                corner: {
+                                  numbers: [
+                                    num,
+                                    row[colIdx + 1],
+                                    numbers[rowIdx + 1][colIdx],
+                                    numbers[rowIdx + 1][colIdx + 1],
+                                  ] as [number, number, number, number],
+                                },
+                              })
                             }
-                          })}
-                          className="absolute -right-0.5 -bottom-0.5 w-3 h-3 bg-white rounded-full hover:w-4 hover:h-4 transition-all z-1 opacity-70 hover:opacity-100"
-                          data-tooltip={`Corner: ${num}-${row[colIdx + 1]}-${numbers[rowIdx + 1][colIdx]}-${numbers[rowIdx + 1][colIdx + 1]}`}
-                        />
-                      )}
+                            className="absolute -right-0.5 -bottom-0.5 w-3 h-3 bg-white rounded-full hover:w-4 hover:h-4 transition-all z-1 opacity-70 hover:opacity-100"
+                            data-tooltip={`Corner: ${num}-${row[colIdx + 1]}-${
+                              numbers[rowIdx + 1][colIdx]
+                            }-${numbers[rowIdx + 1][colIdx + 1]}`}
+                          />
+                        )}
                     </div>
                   ))}
 
                   {/* Street Bets - Left edge of each row */}
                   <button
-                    onClick={() => addBet({ street: { numbers: [row[0], row[1], row[2]] as [number, number, number] } })}
+                    onClick={() =>
+                      addBet({
+                        street: {
+                          numbers: [row[0], row[1], row[2]] as [
+                            number,
+                            number,
+                            number
+                          ],
+                        },
+                      })
+                    }
                     className="absolute -left-1 top-1/2 transform -translate-y-1/2 w-2 h-10 bg-yellow-200 rounded-full hover:w-3 transition-all z-1 opacity-70 hover:opacity-100"
                     data-tooltip={`Street: ${row[0]}-${row[1]}-${row[2]}`}
                   />
@@ -145,34 +197,36 @@ export function AmericanRoulette() {
                     2 to 1
                   </button>
                 </div>
-              )
+              );
             })}
 
             {/* Line Bets - 6 buttons for 6 pairs of columns */}
             {Array.from({ length: 6 }, (_, buttonIdx) => {
-              const col1 = buttonIdx * 2;     // 0, 2, 4, 6, 8, 10
-              const col2 = col1 + 1;          // 1, 3, 5, 7, 9, 11
-              
+              const col1 = buttonIdx * 2; // 0, 2, 4, 6, 8, 10
+              const col2 = col1 + 1; // 1, 3, 5, 7, 9, 11
+
               return (
                 <button
                   key={`line-${buttonIdx}`}
-                  onClick={() => addBet({
-                    line: {
-                      numbers: [
-                        numbers[0][col1],  // Row 0, First column of pair
-                        numbers[0][col2],  // Row 0, Second column of pair
-                        numbers[1][col1],  // Row 1, First column of pair
-                        numbers[1][col2],  // Row 1, Second column of pair
-                        numbers[2][col1],  // Row 2, First column of pair
-                        numbers[2][col2]   // Row 2, Second column of pair
-                      ] as [number, number, number, number, number, number]
-                    }
-                  })}
+                  onClick={() =>
+                    addBet({
+                      line: {
+                        numbers: [
+                          numbers[0][col1], // Row 0, First column of pair
+                          numbers[0][col2], // Row 0, Second column of pair
+                          numbers[1][col1], // Row 1, First column of pair
+                          numbers[1][col2], // Row 1, Second column of pair
+                          numbers[2][col1], // Row 2, First column of pair
+                          numbers[2][col2], // Row 2, Second column of pair
+                        ] as [number, number, number, number, number, number],
+                      },
+                    })
+                  }
                   className="absolute w-3 h-3 bg-purple-900 rounded-full hover:w-4 hover:h-4 transition-all z-1 opacity-70 hover:opacity-100"
                   style={{
                     left: `${((col1 + col2 + 1) / 2 / 12) * 91}%`, // Position between the two columns
                     top: `-5%`,
-                    transform: 'translate(-50%, -50%)'
+                    transform: "translate(-50%, -50%)",
                   }}
                   data-tooltip={`Line: ${numbers[0][col1]}-${numbers[0][col2]}-${numbers[1][col1]}-${numbers[1][col2]}-${numbers[2][col1]}-${numbers[2][col2]}`}
                 />
@@ -260,7 +314,9 @@ export function AmericanRoulette() {
           Clear Bets
         </button>
         <button
-          onClick={() => alert('Spinning! Bets: ' + JSON.stringify(selectedBets))}
+          onClick={() =>
+            alert("Spinning! Bets: " + JSON.stringify(selectedBets))
+          }
           className="bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-3 px-8 rounded-lg transition"
         >
           Spin
@@ -269,10 +325,15 @@ export function AmericanRoulette() {
 
       {selectedBets.length > 0 && (
         <div className="mt-4 bg-green-800 p-4 rounded-lg border-2 border-yellow-600 max-w-2xl">
-          <div className="font-semibold text-yellow-400 mb-2">Selected Bets ({selectedBets.length}):</div>
+          <div className="font-semibold text-yellow-400 mb-2">
+            Selected Bets ({selectedBets.length}):
+          </div>
           <div className="flex flex-wrap gap-2">
             {selectedBets.map((bet, idx) => (
-              <div key={idx} className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2">
+              <div
+                key={idx}
+                className="bg-green-900 text-white px-3 py-1 rounded border border-yellow-600 text-sm flex items-center gap-2"
+              >
                 <span>{formatBet(bet)}</span>
                 <button
                   onClick={() => removeBet(idx)}
@@ -287,4 +348,4 @@ export function AmericanRoulette() {
       )}
     </div>
   );
-};
+}

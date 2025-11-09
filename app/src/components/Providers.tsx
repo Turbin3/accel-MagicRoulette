@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { wrappedFetch } from '@/lib/api';
-import { ReactNode } from 'react';
-import { SWRConfig } from 'swr';
-import { SettingsProvider } from '@/providers/SettingsProvider';
-import { ProgramProvider } from '@/providers/ProgramProvider';
-import { SolanaProvider } from '@/providers/SolanaProvider';
-import { TableProvider } from '@/providers/TableProvider';
+import { wrappedFetch } from "@/lib/api";
+import { ReactNode } from "react";
+import { SWRConfig } from "swr";
+import { SettingsProvider } from "@/providers/SettingsProvider";
+import { ProgramProvider } from "@/providers/ProgramProvider";
+import { SolanaProvider } from "@/providers/SolanaProvider";
+import { TableProvider } from "@/providers/TableProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -20,9 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <SettingsProvider>
         <SolanaProvider>
           <ProgramProvider>
-            <TableProvider>
-              {children}
-            </TableProvider>
+            <TableProvider>{children}</TableProvider>
           </ProgramProvider>
         </SolanaProvider>
       </SettingsProvider>

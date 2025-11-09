@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { ParsedTable } from '@/types/accounts';
-import { wrappedFetch } from '@/lib/api';
-import { createContext, ReactNode, useContext } from 'react';
-import useSWR, { KeyedMutator } from 'swr';
+import { ParsedTable } from "@/types/accounts";
+import { wrappedFetch } from "@/lib/api";
+import { createContext, ReactNode, useContext } from "react";
+import useSWR, { KeyedMutator } from "swr";
 
 interface TableContextType {
   tableData: ParsedTable | undefined;

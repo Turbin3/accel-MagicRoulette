@@ -1,15 +1,11 @@
-import { Address, BN } from '@coral-xyz/anchor';
-import { AccountMeta, Connection } from '@solana/web3.js';
-import magicRouletteIdl from '@/idl/magic-roulette.json';
-import { PublicKey } from '@solana/web3.js';
-import {
-  BetType,
-  bigIntString,
-} from '@/types/accounts';
-import { TransactionInstruction } from '@solana/web3.js';
-import { ProgramClient } from './program-client';
-import { MagicRoulette } from '@/types/magic-roulette';
-import { DEFAULT_QUEUE } from './constants';
+import { Address, BN } from "@coral-xyz/anchor";
+import { AccountMeta, Connection } from "@solana/web3.js";
+import magicRouletteIdl from "@/idl/magic-roulette.json";
+import { PublicKey } from "@solana/web3.js";
+import { BetType, bigIntString } from "@/types/accounts";
+import { TransactionInstruction } from "@solana/web3.js";
+import { ProgramClient } from "./program-client";
+import { MagicRoulette } from "@/types/magic-roulette";
 
 export class MagicRouletteClient extends ProgramClient<MagicRoulette> {
   constructor(connection: Connection) {

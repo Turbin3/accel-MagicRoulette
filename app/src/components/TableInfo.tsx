@@ -17,19 +17,27 @@ export function TableInfo() {
           <p className="text-start">Minimum Bet Amount:</p>
           {tableLoading ? (
             <Skeleton className="w-24 h-4" />
-          ) : tableData && (
-            <span className="text-end">{Number(tableData.minimumBetAmount) / LAMPORTS_PER_SOL} SOL</span>
+          ) : (
+            tableData && (
+              <span className="text-end">
+                {Number(tableData.minimumBetAmount) / LAMPORTS_PER_SOL} SOL
+              </span>
+            )
           )}
         </InfoText>
         <InfoText>
           <p className="text-start">Round Period:</p>
           {tableLoading ? (
             <Skeleton className="w-24 h-4" />
-          ) : tableData && (
-            <span className="text-end">{formatDuration(Number(tableData.roundPeriodTs))}</span>
+          ) : (
+            tableData && (
+              <span className="text-end">
+                {formatDuration(Number(tableData.roundPeriodTs))}
+              </span>
+            )
           )}
         </InfoText>
       </div>
     </section>
-  )
+  );
 }
