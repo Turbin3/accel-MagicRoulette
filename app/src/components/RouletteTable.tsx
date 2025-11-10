@@ -1,7 +1,14 @@
 "use client";
 
+import { useTransaction } from "@/hooks/useTransaction";
+import { sendTx } from "@/lib/api";
+import { buildTx } from "@/lib/client/solana";
+import { useProgram } from "@/providers/ProgramProvider";
+import { useSettings } from "@/providers/SettingsProvider";
 import { BetType } from "@/types/accounts";
-import { useState } from "react";
+import { useConnection, useUnifiedWallet } from "@jup-ag/wallet-adapter";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 
 const tableNumbers = [
   [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36],
@@ -14,6 +21,15 @@ const redNumbers = [
 ];
 
 export function RouletteTable() {
+  const { connection } = useConnection();
+  const { publicKey, signTransaction } = useUnifiedWallet();
+  const { priorityFee } = useSettings();
+  const { magicRouletteClient } = useProgram();
+  const {
+    isSendingTransaction,
+    setIsSendingTransaction,
+    showTransactionToast,
+  } = useTransaction();
   const [selectedBet, setSelectedBet] = useState<BetType | null>(null);
 
   const getNumberColor = (num: number) => {
@@ -50,6 +66,64 @@ export function RouletteTable() {
     if ("high" in selectedBet) return "High (19-36)";
     if ("low" in selectedBet) return "Low (1-18)";
   }
+
+  const placeBet = useCallback(
+    (betAmount: string) => {
+      toast.promise(
+        async () => {
+          if (!publicKey || !signTransaction) {
+            throw new Error("Wallet not connected.");
+          }
+
+          if (!selectedBet) {
+            throw new Error("No bet selected.");
+          }
+
+          let tx = await buildTx(
+            connection,
+            [
+              await magicRouletteClient.placeBetIx({
+                player: publicKey,
+                betAmount,
+                betType: selectedBet,
+              }),
+            ],
+            publicKey,
+            [],
+            priorityFee
+          );
+
+          tx = await signTransaction(tx);
+          const signature = await sendTx(tx);
+
+          return {
+            signature,
+          };
+        },
+        {
+          loading: "Waiting for signature...",
+          success: ({ signature }) => {
+            return showTransactionToast("Bet place!", signature);
+          },
+          error: (err) => {
+            console.error(err);
+            setIsSendingTransaction(false);
+            return err.message || "Something went wrong.";
+          },
+        }
+      );
+    },
+    [
+      connection,
+      magicRouletteClient,
+      priorityFee,
+      publicKey,
+      selectedBet,
+      signTransaction,
+      setIsSendingTransaction,
+      showTransactionToast,
+    ]
+  );
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  px-8 py-4">
