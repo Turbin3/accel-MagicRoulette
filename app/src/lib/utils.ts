@@ -1,4 +1,8 @@
-import { Cluster, VersionedTransaction } from "@solana/web3.js";
+import {
+  Cluster,
+  LAMPORTS_PER_SOL,
+  VersionedTransaction,
+} from "@solana/web3.js";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { BN } from "@coral-xyz/anchor";
@@ -90,4 +94,8 @@ export function milliToTimestamp(ms: number): number {
 export function capitalizeFirstLetter(str: string): string {
   if (str.length === 0) return str;
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function parseLamportsToSol(lamports: string): string {
+  return (parseFloat(lamports) * LAMPORTS_PER_SOL).toString();
 }
