@@ -18,6 +18,7 @@ import { Input } from "./ui/input";
 import { cn, parseLamportsToSol } from "@/lib/utils";
 import { WalletMinimal } from "lucide-react";
 import { BigRoundedButton } from "./BigRoundedButton";
+import { InfoDiv } from "./InfoDiv";
 
 const increments = [1, 0.1, 0.01];
 
@@ -99,8 +100,8 @@ export function PlaceBetSection() {
 
   return (
     <section className="flex flex-col gap-2">
-      <div className="border border-primary rounded-sm px-1 py-2 flex flex-col gap-2 bg-primary/10">
-        <div className="flex items-center justify-between gap-4">
+      <InfoDiv>
+        <div className="flex items-center justify-between gap-4 w-full">
           {balance ? (
             <Button
               asChild
@@ -139,7 +140,7 @@ export function PlaceBetSection() {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full">
           <div className="flex items-center gap-2 px-1">
             <Image
               alt="Solana"
@@ -150,6 +151,7 @@ export function PlaceBetSection() {
             />
             <span className="font-semibold text-primary">SOL</span>
           </div>
+          {/* TODO: when backspacing a decimal, input pointer jumps to start of number */}
           <Input
             placeholder="1"
             type="number"
@@ -164,7 +166,7 @@ export function PlaceBetSection() {
             }}
           />
         </div>
-      </div>
+      </InfoDiv>
       <div className="flex justify-between">
         <p className="font-semibold text-secondary">Selected Bet</p>
         <p className="font-semibold text-primary">

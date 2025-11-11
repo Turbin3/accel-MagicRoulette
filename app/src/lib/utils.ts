@@ -6,6 +6,7 @@ import {
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { BN } from "@coral-xyz/anchor";
+import { BetType } from "@/types/accounts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -98,4 +99,39 @@ export function capitalizeFirstLetter(str: string): string {
 
 export function parseLamportsToSol(lamports: string): string {
   return (parseFloat(lamports) * LAMPORTS_PER_SOL).toString();
+}
+
+export function formatBetType(betType: BetType): string {
+  if ("straightUp" in betType) {
+    const number = betType.straightUp?.number;
+    return `Straight: ${number === 37 ? "00" : number}`;
+  } else if ("split" in betType) {
+    return `Split: ${betType.split?.numbers.join("-")}`;
+  } else if ("street" in betType) {
+    return `Street: ${betType.street?.numbers.join("-")}`;
+  } else if ("corner" in betType) {
+    return `Corner: ${betType.corner?.numbers.join("-")}`;
+  } else if ("fiveNumber" in betType) {
+    return "Five Number";
+  } else if ("line" in betType) {
+    return `Line: ${betType.line?.numbers.join("-")}`;
+  } else if ("column" in betType) {
+    return `Column: ${betType.column?.column}`;
+  } else if ("dozen" in betType) {
+    return `Dozen: ${betType.dozen?.dozen}`;
+  } else if ("red" in betType) {
+    return "Red";
+  } else if ("black" in betType) {
+    return "Black";
+  } else if ("even" in betType) {
+    return "Even";
+  } else if ("odd" in betType) {
+    return "Odd";
+  } else if ("high" in betType) {
+    return "High";
+  } else if ("low" in betType) {
+    return "Low";
+  } else {
+    throw new Error("Invalid bet type.");
+  }
 }

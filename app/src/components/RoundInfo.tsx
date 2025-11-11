@@ -3,10 +3,9 @@
 import { useTable } from "@/providers/TableProvider";
 import { Skeleton } from "./ui/skeleton";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useCallback } from "react";
-import { formatCountdown, milliToTimestamp } from "@/lib/utils";
+import { useCallback, useMemo } from "react";
+import { formatBetType, formatCountdown, milliToTimestamp } from "@/lib/utils";
 import { useRound } from "@/providers/RoundProvider";
-import { Button } from "./ui/button";
 import { useProgram } from "@/providers/ProgramProvider";
 import { useConnection, useUnifiedWallet } from "@jup-ag/wallet-adapter";
 import { BN } from "@coral-xyz/anchor";
@@ -14,8 +13,22 @@ import { buildTx } from "@/lib/client/solana";
 import { useSettings } from "@/providers/SettingsProvider";
 import { sendTx } from "@/lib/api";
 import { toast } from "sonner";
-import { InfoText } from "./InfoText";
 import { useTransaction } from "@/providers/TransactionProvider";
+import { BigRoundedButton } from "./BigRoundedButton";
+import { InfoDiv } from "./InfoDiv";
+import { useBets } from "@/providers/BetsProvider";
+
+function LoadingSkeleton() {
+  return <Skeleton className="w-12 h-6" />;
+}
+
+function RoundInfoSpan({ text }: { text: string }) {
+  return <span className="text-2xl font-semibold text-primary">{text}</span>;
+}
+
+function RoundInfoP({ text }: { text: string }) {
+  return <p className="text-sm text-accent">{text}</p>;
+}
 
 export function RoundInfo() {
   const { magicRouletteClient } = useProgram();
@@ -25,6 +38,7 @@ export function RoundInfo() {
   const { tableData, tableLoading } = useTable();
   const { lastRoundOutcome, hasRoundEnded, roundEndsInSecs } = useRound();
   const { roundData, roundLoading } = useRound();
+  const { betsData, betsLoading } = useBets();
   const {
     isSendingTransaction,
     setIsSendingTransaction,
@@ -34,6 +48,16 @@ export function RoundInfo() {
   if (!tableLoading && !tableData) {
     throw new Error("Table is not initialized.");
   }
+
+  const currentBetType = useMemo(() => {
+    const betAcc = betsData?.find((bet) => {
+      return bet.round === roundData?.publicKey;
+    });
+
+    if (!betAcc) return null;
+
+    return betAcc.betType;
+  }, [roundData, betsData]);
 
   const spinRoulette = useCallback(() => {
     toast.promise(
@@ -100,40 +124,50 @@ export function RoundInfo() {
   ]);
 
   return (
-    <section className="flex flex-col gap-4 p-4 border border-gray-300 rounded-md">
-      <h2 className="text-xl">Round Info</h2>
-      <div className="flex flex-col">
-        <InfoText>
-          <p className="text-start">Current Round:</p>
+    <section className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-2">
+        <InfoDiv>
           {tableLoading ? (
-            <Skeleton className="w-8 h-4" />
+            <LoadingSkeleton />
           ) : (
             tableData && (
-              <span className="text-end">{tableData.currentRoundNumber}</span>
+              <RoundInfoSpan text={`#${tableData.currentRoundNumber}`} />
             )
           )}
-        </InfoText>
-        <InfoText>
-          <p className="text-start">Pool Amount:</p>
+          <RoundInfoP text="Current Round" />
+        </InfoDiv>
+        <InfoDiv>
           {roundLoading ? (
-            <Skeleton className="w-24 h-4" />
+            <LoadingSkeleton />
           ) : (
             roundData && (
-              <span className="text-end">
-                {Number(roundData.poolAmount) / LAMPORTS_PER_SOL} SOL
-              </span>
+              <RoundInfoSpan
+                text={`${parseInt(roundData.poolAmount) / LAMPORTS_PER_SOL}`}
+              />
             )
           )}
-        </InfoText>
-        <InfoText>
-          <p className="text-start">Last Round Outcome:</p>
-          <span className="text-end">
-            {lastRoundOutcome !== null ? lastRoundOutcome : "-"}
-          </span>
-        </InfoText>
+          <RoundInfoP text="Pool Amount" />
+        </InfoDiv>
+        <InfoDiv>
+          <RoundInfoSpan
+            text={lastRoundOutcome ? lastRoundOutcome.toString() : "-"}
+          />
+          <RoundInfoP text="Last Round Outcome" />
+        </InfoDiv>
+        <InfoDiv>
+          {roundLoading || betsLoading ? (
+            <LoadingSkeleton />
+          ) : (
+            <RoundInfoSpan
+              text={
+                currentBetType !== null ? formatBetType(currentBetType) : "-"
+              }
+            />
+          )}
+          <RoundInfoP text="Your Bet" />
+        </InfoDiv>
       </div>
-      <Button
-        className="cursor-pointer"
+      <BigRoundedButton
         onClick={spinRoulette}
         disabled={!tableData || isSendingTransaction || !hasRoundEnded}
       >
@@ -142,7 +176,7 @@ export function RoundInfo() {
           : `Round ends in ${formatCountdown(
               milliToTimestamp(roundEndsInSecs)
             )}`}
-      </Button>
+      </BigRoundedButton>
     </section>
   );
 }
