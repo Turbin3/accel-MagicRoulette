@@ -19,7 +19,7 @@ import { InfoDiv } from "./InfoDiv";
 import { useBets } from "@/providers/BetsProvider";
 
 function LoadingSkeleton() {
-  return <Skeleton className="w-12 h-6" />;
+  return <Skeleton className="w-12 h-8" />;
 }
 
 function RoundInfoSpan({ text }: { text: string }) {
