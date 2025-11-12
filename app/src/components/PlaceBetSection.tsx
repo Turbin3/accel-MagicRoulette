@@ -60,6 +60,8 @@ export function PlaceBetSection() {
             throw new Error("No bet selected.");
           }
 
+          setIsSendingTransaction(true);
+
           let tx = await buildTx(
             connection,
             [
