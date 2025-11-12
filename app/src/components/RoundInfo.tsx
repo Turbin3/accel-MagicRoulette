@@ -181,13 +181,15 @@ export function RoundInfo() {
       </div>
       <BigRoundedButton
         onClick={spinRoulette}
-        disabled={!tableData || isSendingTransaction || !isRoundOver}
+        disabled={roundData?.isSpun || !isRoundOver || isSendingTransaction}
       >
-        {isRoundOver
-          ? "Spin Roulette"
-          : `Round ends in ${formatCountdown(
+        {roundData?.isSpun
+          ? "Awaiting outcome..."
+          : !isRoundOver
+          ? `Round ends in ${formatCountdown(
               milliToTimestamp(roundEndsInSecs)
-            )}`}
+            )}`
+          : "Spin Roulette"}
       </BigRoundedButton>
     </section>
   );
