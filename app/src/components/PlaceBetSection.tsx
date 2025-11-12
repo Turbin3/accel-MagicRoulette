@@ -81,6 +81,8 @@ export function PlaceBetSection() {
         {
           loading: "Waiting for signature...",
           success: async ({ signature, publicKey, selectedBet }) => {
+            const amountInLamports = parseSolToLamports(betAmount).toString();
+
             await betsMutate((prev) => {
               if (!prev) {
                 throw new Error("Bets should not be null.");
@@ -94,7 +96,7 @@ export function PlaceBetSection() {
                 publicKey: magicRouletteClient
                   .getBetPda(new PublicKey(roundData.publicKey), publicKey)
                   .toBase58(),
-                amount: parseSolToLamports(betAmount).toString(),
+                amount: amountInLamports,
                 betType: selectedBet,
                 isClaimed: false,
                 player: publicKey.toBase58(),
@@ -112,7 +114,7 @@ export function PlaceBetSection() {
               return {
                 ...prev,
                 poolAmount: new BN(prev.poolAmount)
-                  .add(new BN(betAmount))
+                  .add(new BN(amountInLamports))
                   .toString(),
               };
             });
