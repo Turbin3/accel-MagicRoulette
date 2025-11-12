@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { buildTx } from "@/lib/client/solana";
 import { sendTx } from "@/lib/api";
 import { useBets } from "@/providers/BetsProvider";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { Input } from "./ui/input";
@@ -29,8 +29,8 @@ export function PlaceBetSection() {
   const { publicKey, signTransaction } = useUnifiedWallet();
   const { priorityFee } = useSettings();
   const { magicRouletteClient } = useProgram();
-  const { isRoundOver } = useRound();
-  const { selectedBet, formattedBet } = useBets();
+  const { roundData, isRoundOver } = useRound();
+  const { betsMutate, selectedBet, formattedBet } = useBets();
   const {
     isSendingTransaction,
     setIsSendingTransaction,
@@ -73,11 +73,36 @@ export function PlaceBetSection() {
 
           return {
             signature,
+            publicKey,
+            selectedBet,
           };
         },
         {
           loading: "Waiting for signature...",
-          success: ({ signature }) => {
+          success: async ({ signature, publicKey, selectedBet }) => {
+            await betsMutate((prev) => {
+              if (!prev) {
+                throw new Error("Bets should not be null.");
+              }
+
+              if (!roundData) {
+                throw new Error("Round data should not be null.");
+              }
+
+              prev.push({
+                publicKey: magicRouletteClient
+                  .getBetPda(new PublicKey(roundData.publicKey), publicKey)
+                  .toBase58(),
+                amount: parseSolToLamports(betAmount).toString(),
+                betType: selectedBet,
+                isClaimed: false,
+                player: publicKey.toBase58(),
+                round: roundData.publicKey,
+              });
+
+              return prev;
+            });
+
             return showTransactionToast("Bet place!", signature);
           },
           error: (err) => {
@@ -94,9 +119,11 @@ export function PlaceBetSection() {
       priorityFee,
       publicKey,
       selectedBet,
+      roundData,
       signTransaction,
       setIsSendingTransaction,
       showTransactionToast,
+      betsMutate,
     ]
   );
 
