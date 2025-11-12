@@ -37,7 +37,7 @@ export function RoundInfo() {
   const { connection } = useConnection();
   const { tableData, tableLoading } = useTable();
   const { lastRoundOutcome, isRoundOver, roundEndsInSecs } = useRound();
-  const { roundData, roundLoading } = useRound();
+  const { roundData, roundLoading, roundMutate } = useRound();
   const { betsData, betsLoading } = useBets();
   const {
     isSendingTransaction,
@@ -102,7 +102,18 @@ export function RoundInfo() {
       },
       {
         loading: "Waiting for signature...",
-        success: ({ signature }) => {
+        success: async ({ signature }) => {
+          await roundMutate((prev) => {
+            if (!prev) {
+              throw new Error("Round should not be null.");
+            }
+
+            return {
+              ...prev,
+              isSpun: true,
+            };
+          });
+
           return showTransactionToast("Roulette spun!", signature);
         },
         error: (err) => {
@@ -121,6 +132,7 @@ export function RoundInfo() {
     signTransaction,
     setIsSendingTransaction,
     showTransactionToast,
+    roundMutate,
   ]);
 
   return (
