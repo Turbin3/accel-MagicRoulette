@@ -1,12 +1,8 @@
-import {
-  Cluster,
-  LAMPORTS_PER_SOL,
-  VersionedTransaction,
-} from "@solana/web3.js";
+import { Cluster, VersionedTransaction } from "@solana/web3.js";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { BN } from "@coral-xyz/anchor";
-import { BetType } from "@/types/accounts";
+import { BetType, bigIntString } from "@/types/accounts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -97,8 +93,37 @@ export function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function parseLamportsToSol(lamports: string): string {
-  return (parseFloat(lamports) * LAMPORTS_PER_SOL).toString();
+export function parseSolToLamports(sol: bigIntString): string {
+  // Remove any non-digit and non-decimal characters
+  const cleanStr = sol.replace(/[^\d.]/g, "");
+
+  // Split into integer and decimal parts
+  const parts = cleanStr.split(".");
+  const integerPart = parts[0] || "0";
+  const decimalPart = (parts[1] || "").padEnd(9, "0").slice(0, 9);
+
+  // Combine and remove leading zeros
+  const lamports = (integerPart + decimalPart).replace(/^0+/, "") || "0";
+
+  return lamports;
+}
+
+export function parseLamportsToSol(lamports: bigIntString): string {
+  // Remove any non-digit characters
+  const cleanStr = lamports.replace(/\D/g, "");
+
+  // Pad with leading zeros if needed (for amounts less than 1 SOL)
+  const paddedStr = cleanStr.padStart(10, "0");
+
+  // Split into integer and decimal parts (9 decimal places for lamports)
+  const len = paddedStr.length;
+  const integerPart = paddedStr.slice(0, len - 9) || "0";
+  const decimalPart = paddedStr.slice(len - 9);
+
+  // Remove trailing zeros from decimal part
+  const trimmedDecimal = decimalPart.replace(/0+$/, "");
+
+  return trimmedDecimal ? `${integerPart}.${trimmedDecimal}` : integerPart;
 }
 
 export function formatBetType(betType: BetType): string {

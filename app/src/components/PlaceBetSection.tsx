@@ -15,7 +15,7 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { Input } from "./ui/input";
-import { cn, parseLamportsToSol } from "@/lib/utils";
+import { cn, parseSolToLamports } from "@/lib/utils";
 import { WalletMinimal } from "lucide-react";
 import { BigRoundedButton } from "./BigRoundedButton";
 import { InfoDiv } from "./InfoDiv";
@@ -59,7 +59,7 @@ export function PlaceBetSection() {
             [
               await magicRouletteClient.placeBetIx({
                 player: publicKey,
-                betAmount: parseLamportsToSol(betAmount),
+                betAmount: parseSolToLamports(betAmount),
                 betType: selectedBet,
               }),
             ],
