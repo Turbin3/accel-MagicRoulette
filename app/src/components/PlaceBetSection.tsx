@@ -232,7 +232,7 @@ export function PlaceBetSection() {
                 : 0
             }
             className="no-slider text-end font-semibold text-2xl! placeholder:text-secondary/75 selection:bg-primary/20 selection:text-primary text-primary placeholder:font-semibold placeholder:text-2xl border-none shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0 px-1 bg-transparent!"
-            value={betAmount}
+            value={isNaN(betAmount) ? "" : betAmount}
             onChange={(e) => {
               setBetAmount(parseFloat(e.target.value));
             }}
