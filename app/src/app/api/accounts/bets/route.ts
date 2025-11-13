@@ -68,10 +68,6 @@ export async function GET(req: NextRequest) {
             throw new Error("Bet has no matching round.");
           }
 
-          if (matchingRound.outcome === null) {
-            return false;
-          }
-
           const isWinningBet = isWinner(bet.betType, matchingRound.outcome);
 
           return isWinning.toLowerCase() === "true"

@@ -10,15 +10,19 @@ import { Spinner } from "@/components/ui/spinner";
 import { RoundInfo } from "@/components/RoundInfo";
 import { RouletteTable } from "@/components/RouletteTable";
 import { PlaceBetSection } from "@/components/PlaceBetSection";
+import { BetHistory } from "@/components/BetHistory";
 
 function Main() {
   return (
-    <section className="flex gap-8 py-8 items-start justify-between">
-      <RouletteTable />
-      <section className="flex flex-col gap-4">
-        <RoundInfo />
-        <PlaceBetSection />
+    <section className="flex flex-col gap-8 py-4 w-fit items-center">
+      <section className="flex gap-8 items-start">
+        <RouletteTable />
+        <section className="flex flex-col gap-4">
+          <RoundInfo />
+          <PlaceBetSection />
+        </section>
       </section>
+      <BetHistory />
     </section>
   );
 }

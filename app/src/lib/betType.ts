@@ -8,7 +8,9 @@ const BLACK_NUMBERS = [
   2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35,
 ];
 
-export function isWinner(betType: BetType, outcome: number): boolean {
+export function isWinner(betType: BetType, outcome: number | null): boolean {
+  if (!outcome) return false;
+
   if (betType.straightUp) {
     return betType.straightUp.number === outcome;
   }
@@ -85,4 +87,23 @@ export function isWinner(betType: BetType, outcome: number): boolean {
   }
 
   return false;
+}
+
+export function payoutMultiplier(betType: BetType): number {
+  if ("straightUp" in betType) return 35;
+  if ("split" in betType) return 17;
+  if ("street" in betType) return 11;
+  if ("corner" in betType) return 8;
+  if ("fiveNumber" in betType) return 6;
+  if ("line" in betType) return 5;
+  if ("column" in betType) return 2;
+  if ("dozen" in betType) return 2;
+  if ("red" in betType) return 1;
+  if ("black" in betType) return 1;
+  if ("even" in betType) return 1;
+  if ("odd" in betType) return 1;
+  if ("high" in betType) return 1;
+  if ("low" in betType) return 1;
+
+  throw new Error("Invalid bet type.");
 }
