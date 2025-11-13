@@ -4,7 +4,12 @@ import { useTable } from "@/providers/TableProvider";
 import { Skeleton } from "./ui/skeleton";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useCallback, useMemo } from "react";
-import { formatBetType, formatCountdown, milliToTimestamp } from "@/lib/utils";
+import {
+  cn,
+  formatBetType,
+  formatCountdown,
+  milliToTimestamp,
+} from "@/lib/utils";
 import { useRound } from "@/providers/RoundProvider";
 import { useProgram } from "@/providers/ProgramProvider";
 import { useConnection, useUnifiedWallet } from "@jup-ag/wallet-adapter";
@@ -36,12 +41,18 @@ function RoundInfoP({ text }: { text: string }) {
 
 export function RoundInfo() {
   const { magicRouletteClient } = useProgram();
-  const { priorityFee } = useSettings();
+  const { priorityFee, getAccountLink } = useSettings();
   const { publicKey, signTransaction } = useUnifiedWallet();
   const { connection } = useConnection();
   const { tableData, tableLoading } = useTable();
-  const { lastRoundOutcome, isRoundOver, roundEndsInSecs } = useRound();
-  const { roundData, roundLoading, roundMutate } = useRound();
+  const {
+    roundData,
+    roundLoading,
+    roundMutate,
+    lastRoundOutcome,
+    isRoundOver,
+    roundEndsInSecs,
+  } = useRound();
   const { betsData, betsLoading } = useBets();
   const {
     isSendingTransaction,
@@ -142,7 +153,21 @@ export function RoundInfo() {
   return (
     <section className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-2">
-        <InfoDiv>
+        <InfoDiv
+          className={cn(
+            tableData
+              ? "cursor-pointer hover:bg-primary/20 transition-colors"
+              : ""
+          )}
+          onClick={() => {
+            if (tableData) {
+              window.open(
+                getAccountLink(tableData.publicKey.toString()),
+                "_blank"
+              );
+            }
+          }}
+        >
           {tableLoading ? (
             <LoadingSkeleton />
           ) : (
@@ -152,7 +177,21 @@ export function RoundInfo() {
           )}
           <RoundInfoP text="Current Round" />
         </InfoDiv>
-        <InfoDiv>
+        <InfoDiv
+          className={cn(
+            roundData
+              ? "cursor-pointer hover:bg-primary/20 transition-colors"
+              : ""
+          )}
+          onClick={() => {
+            if (roundData) {
+              window.open(
+                getAccountLink(roundData.publicKey.toString()),
+                "_blank"
+              );
+            }
+          }}
+        >
           {roundLoading ? (
             <LoadingSkeleton />
           ) : (
@@ -162,15 +201,51 @@ export function RoundInfo() {
               />
             )
           )}
-          <RoundInfoP text="Pool Amount" />
+          <RoundInfoP text="Pool Amount (SOL)" />
         </InfoDiv>
-        <InfoDiv>
+        <InfoDiv
+          className={cn(
+            tableData
+              ? "cursor-pointer hover:bg-primary/20 transition-colors"
+              : ""
+          )}
+          onClick={() => {
+            if (tableData) {
+              const previousRoundData = magicRouletteClient.getRoundPda(
+                new BN(tableData.currentRoundNumber).subn(1)
+              );
+              window.open(
+                getAccountLink(previousRoundData.toString()),
+                "_blank"
+              );
+            }
+          }}
+        >
           <RoundInfoSpan
             text={lastRoundOutcome ? lastRoundOutcome.toString() : "-"}
           />
           <RoundInfoP text="Last Round Outcome" />
         </InfoDiv>
-        <InfoDiv>
+        <InfoDiv
+          className={cn(
+            currentBetType
+              ? "cursor-pointer hover:bg-primary/20 transition-colors"
+              : ""
+          )}
+          onClick={() => {
+            if (currentBetType && betsData && roundData) {
+              const bet = betsData.find((bet) => {
+                return bet.round === roundData.publicKey;
+              });
+
+              if (!bet) {
+                throw new Error("Bet not found.");
+              }
+
+              window.open(getAccountLink(bet.publicKey), "_blank");
+            }
+          }}
+        >
           {roundLoading || betsLoading ? (
             <LoadingSkeleton />
           ) : (
