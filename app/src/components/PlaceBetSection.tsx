@@ -95,7 +95,7 @@ export function PlaceBetSection() {
         {
           loading: "Waiting for signature...",
           success: async ({ signature, publicKey, selectedBet }) => {
-            const amountInLamports = parseSolToLamports(betAmount).toString();
+            const amountInLamports = parseSolToLamports(betAmount);
 
             await betsMutate((prev) => {
               if (!prev) {

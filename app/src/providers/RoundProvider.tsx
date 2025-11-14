@@ -87,7 +87,7 @@ export function RoundProvider({
 
           return {
             ...prev,
-            poolAmount: round.poolAmount.toString(),
+            poolAmount: parseBN(round.poolAmount),
           };
         });
       } else if (round.outcome) {
@@ -117,6 +117,8 @@ export function RoundProvider({
           }
         }
 
+        const newRoundNumber = round.roundNumber.addn(1);
+
         await tableMutate((prev) => {
           if (!prev) {
             throw new Error("Table should not be null.`");
@@ -124,23 +126,20 @@ export function RoundProvider({
 
           return {
             ...prev,
-            // changing currentRoundNumber will destroy and render a new RoundProvider
-            currentRoundNumber: (
-              Number(prev.currentRoundNumber) + 1
-            ).toString(),
-            nextRoundTs: (
-              Number(prev.nextRoundTs) + Number(prev.roundPeriodTs)
-            ).toString(),
+            currentRoundNumber: parseBN(newRoundNumber),
+            nextRoundTs: parseBN(
+              new BN(prev.nextRoundTs).add(new BN(prev.roundPeriodTs))
+            ),
           };
         });
 
-        const newRoundNumber = round.roundNumber.addn(1);
+        const newRoundPda = magicRouletteClient.getRoundPda(newRoundNumber);
 
         await roundMutate({
           isSpun: false,
           outcome: null,
           poolAmount: "0",
-          publicKey: magicRouletteClient.getRoundPda(newRoundNumber).toBase58(),
+          publicKey: newRoundPda.toBase58(),
           roundNumber: parseBN(newRoundNumber),
         });
       }

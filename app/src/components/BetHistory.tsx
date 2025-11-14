@@ -55,6 +55,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { BN } from "@coral-xyz/anchor";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { Skeleton } from "./ui/skeleton";
+import { parseBN } from "@/types/accounts";
 
 type BetHistoryRecord = {
   publicKey: string;
@@ -231,7 +232,7 @@ export function BetHistory() {
           hasWon,
           claimable: hasWon && !bet.isClaimed,
           payout: hasWon
-            ? new BN(bet.amount).muln(payoutMultiplier(bet.betType)).toString()
+            ? parseBN(new BN(bet.amount).muln(payoutMultiplier(bet.betType)))
             : "",
         };
       })
