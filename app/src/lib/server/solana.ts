@@ -1,4 +1,11 @@
-import { clusterApiUrl, Connection, Cluster } from "@solana/web3.js";
+import {
+  clusterApiUrl,
+  Connection,
+  Cluster,
+  Keypair,
+  TransactionMessage,
+  VersionedTransaction,
+} from "@solana/web3.js";
 import { randomUUID } from "crypto";
 import { MagicRouletteClient } from "../magic-roulette-client";
 import {
@@ -6,6 +13,7 @@ import {
   CuPriceRange,
   SendTransactionResponse,
 } from "@/types/transactions";
+import { DISCRIMINATOR_SIZE } from "../constants";
 
 const CLUSTER: Cluster = (process.env.SOLANA_RPC_CLUSTER ??
   "devnet") as Cluster;
@@ -14,6 +22,36 @@ export const CONNECTION = new Connection(
   "confirmed"
 );
 export const MAGIC_ROULETTE_CLIENT = new MagicRouletteClient(CONNECTION);
+
+export const FUNDED_KEYPAIR = Keypair.fromSecretKey(
+  new Uint8Array(JSON.parse(process.env.FUNDED_KEYPAIR as string))
+);
+
+export async function validateProgramIx(
+  tx: VersionedTransaction,
+  allowedIxs: string[]
+): Promise<boolean> {
+  const { instructions } = TransactionMessage.decompile(tx.message);
+
+  const ix = instructions.find((ix) =>
+    ix.programId.equals(MAGIC_ROULETTE_CLIENT.getProgramId())
+  );
+
+  if (!ix) {
+    return false;
+  }
+
+  return allowedIxs.some(async (ixName) => {
+    const discriminator = ix.data.subarray(0, DISCRIMINATOR_SIZE);
+    const hash = await crypto.subtle.digest(
+      "SHA-256",
+      Buffer.from(`global:${ixName}`)
+    );
+    const expected = Buffer.from(hash).subarray(0, DISCRIMINATOR_SIZE);
+
+    return discriminator.equals(expected);
+  });
+}
 
 export async function buildTx(
   transaction: string,

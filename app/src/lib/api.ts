@@ -20,6 +20,16 @@ export async function wrappedFetch(
   return data;
 }
 
+export async function sendPermissionedTx(
+  tx: VersionedTransaction
+): Promise<string> {
+  const data = await wrappedFetch("/api/transaction/permissioned", "POST", {
+    transaction: v0TxToBase64(tx),
+  });
+
+  return data.signature;
+}
+
 export async function optimizeTx(
   tx: VersionedTransaction,
   cuPriceRange: CuPriceRange
