@@ -22,6 +22,7 @@ import { useTransaction } from "@/providers/TransactionProvider";
 import { BigRoundedButton } from "./BigRoundedButton";
 import { InfoDiv } from "./InfoDiv";
 import { useBets } from "@/providers/BetsProvider";
+import { useRounds } from "@/providers/RoundsProvider";
 
 function LoadingSkeleton() {
   return <Skeleton className="w-12 h-8" />;
@@ -53,6 +54,7 @@ export function RoundInfo() {
     roundEndsInSecs,
   } = useRound();
   const { betsData, betsLoading } = useBets();
+  const { roundsMutate } = useRounds();
   const {
     isSendingTransaction,
     setIsSendingTransaction,
@@ -123,6 +125,26 @@ export function RoundInfo() {
             };
           });
 
+          await roundsMutate((prev) => {
+            if (!prev) {
+              throw new Error("Rounds should not be null.");
+            }
+
+            if (!roundData) {
+              throw new Error("Round should not be null.");
+            }
+
+            return prev.map((round) => {
+              if (round.publicKey === roundData.publicKey) {
+                return {
+                  ...round,
+                  isSpun: true,
+                };
+              }
+              return round;
+            });
+          });
+
           return showTransactionToast("Roulette spun!", signature);
         },
         error: (err) => {
@@ -134,12 +156,14 @@ export function RoundInfo() {
     );
   }, [
     tableData,
+    roundData,
     connection,
     magicRouletteClient,
     priorityFee,
     setIsSendingTransaction,
     showTransactionToast,
     roundMutate,
+    roundsMutate,
   ]);
 
   return (
