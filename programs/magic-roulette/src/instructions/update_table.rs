@@ -20,6 +20,7 @@ impl<'info> UpdateTable<'info> {
         &mut self,
         minimum_bet_amount: Option<u64>,
         round_period_ts: Option<u64>,
+        new_admin: Option<Pubkey>,
     ) -> Result<()> {
         if let Some(minimum_bet_amount) = minimum_bet_amount {
             require!(
@@ -34,6 +35,15 @@ impl<'info> UpdateTable<'info> {
             require!(round_period_ts > 0, MagicRouletteError::InvalidRoundPeriod);
 
             self.table.round_period_ts = round_period_ts;
+        }
+
+        if let Some(new_admin) = new_admin {
+            require!(
+                new_admin != Pubkey::default(),
+                MagicRouletteError::InvalidAddress
+            );
+
+            self.table.admin = new_admin;
         }
 
         Ok(())

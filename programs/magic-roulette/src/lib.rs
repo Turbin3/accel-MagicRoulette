@@ -29,9 +29,10 @@ pub mod magic_roulette {
         ctx: Context<UpdateTable>,
         minimum_bet_amount: Option<u64>,
         round_period_ts: Option<u64>,
+        new_admin: Option<Pubkey>,
     ) -> Result<()> {
         ctx.accounts
-            .update_table(minimum_bet_amount, round_period_ts)
+            .update_table(minimum_bet_amount, round_period_ts, new_admin)
     }
 
     pub fn place_bet(ctx: Context<PlaceBet>, bet_type: BetType, bet_amount: u64) -> Result<()> {

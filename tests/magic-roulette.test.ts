@@ -106,7 +106,7 @@ describe("magic-roulette", () => {
     const minimumBetAmount = 1000; // 1000 lamports
 
     await program.methods
-      .updateTable(new BN(minimumBetAmount), null)
+      .updateTable(new BN(minimumBetAmount), null, null)
       .accounts({
         admin: wallet.publicKey,
       })
