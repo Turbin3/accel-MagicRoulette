@@ -158,7 +158,11 @@ export function RoundsProvider({
               );
 
               toast.success(
-                `You won ${amountWonInSol} SOL from round #${round.roundNumber}!`
+                <p>
+                  You won{" "}
+                  <span className="text-yellow-500">{amountWonInSol} SOL</span>{" "}
+                  from round #{parseBN(round.roundNumber)}!
+                </p>
               );
             }
           }
