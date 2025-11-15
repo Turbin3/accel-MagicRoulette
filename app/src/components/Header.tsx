@@ -109,7 +109,7 @@ export function Header() {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <header className="flex w-full items-center justify-between p-4 bg-primary h-20">
+    <header className="flex flex-col p-1 sm:flex-row w-full items-center justify-between sm:p-4 bg-primary h-20">
       <div className="flex items-center gap-6">
         <Link className="flex gap-2 items-center" href={"/"}>
           <LifeBuoy />
