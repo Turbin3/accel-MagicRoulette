@@ -451,7 +451,7 @@ export function BetHistory() {
         <h2 className="text-2xl font-semibold">Bet History</h2>
         <div className="flex gap-4 items-center">
           {publicKey && (
-            <p className="text-sm">
+            <p className="text-sm flex items-center gap-2">
               Net PnL:{" "}
               <span
                 className={cn(
@@ -463,8 +463,18 @@ export function BetHistory() {
                     : "text-red-400"
                 )}
               >
-                {netPnL.gt(new BN(0)) ? "+" : netPnL.eq(new BN(0)) ? "" : "-"}
-                {parseLamportsToSol(netPnL.toString())} SOL
+                {roundsLoading || betsLoading ? (
+                  <Skeleton className="h-4 w-24" />
+                ) : (
+                  <>
+                    {netPnL.gt(new BN(0))
+                      ? "+"
+                      : netPnL.eq(new BN(0))
+                      ? ""
+                      : "-"}
+                    {parseLamportsToSol(netPnL.toString())} SOL
+                  </>
+                )}
               </span>
             </p>
           )}
