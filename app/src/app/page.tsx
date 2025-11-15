@@ -15,7 +15,7 @@ import { BetHistory } from "@/components/BetHistory";
 function Main() {
   return (
     <section className="flex flex-col gap-8 py-4 w-fit items-center">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center sm:hidden">
         <p>Roulette is scrollable.</p>
         <p>Switch to desktop for better experience.</p>
       </div>
