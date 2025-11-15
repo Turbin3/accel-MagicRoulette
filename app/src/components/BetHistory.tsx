@@ -449,70 +449,74 @@ export function BetHistory() {
 
   return (
     <section className="w-full flex flex-col gap-4 justify-start">
-      <div className="flex items-center gap-6 justify-between">
+      <div className="flex items-center gap-4 justify-between">
         <h2 className="text-2xl font-semibold">Bet History</h2>
-        <div className="flex gap-4 items-center">
-          {publicKey && (
-            <p className="text-sm">
-              Net PnL:{" "}
-              <span
-                className={cn(
-                  "font-semibold",
-                  netPnL.gt(new BN(0))
-                    ? "text-green-500"
-                    : netPnL.eq(new BN(0))
-                    ? "text-foreground"
-                    : "text-red-400"
-                )}
-              >
-                {netPnL.gt(new BN(0)) ? "+" : netPnL.eq(new BN(0)) ? "" : "-"}
-                {parseLamportsToSol(netPnL.toString())} SOL
-              </span>
-            </p>
-          )}
-          <Select
-            value={filter}
-            onValueChange={(value) => setFilter(value as FilterValue)}
-          >
-            <SelectTrigger className="w-fit min-w-[100px] cursor-pointer">
-              <SelectValue placeholder="All" />
-            </SelectTrigger>
-            <SelectContent>
-              {filterOptions.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  value={option.value}
-                  className="cursor-pointer"
+        <div className="flex flex-col sm:flex-row sm:gap-6 items-center gap-1">
+          <div>
+            {publicKey && (
+              <p className="text-sm">
+                Net PnL:{" "}
+                <span
+                  className={cn(
+                    "font-semibold",
+                    netPnL.gt(new BN(0))
+                      ? "text-green-500"
+                      : netPnL.eq(new BN(0))
+                      ? "text-foreground"
+                      : "text-red-400"
+                  )}
                 >
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="secondary"
-                className="cursor-pointer"
-                disabled={
-                  !publicKey ||
-                  isSendingTransaction ||
-                  claimableBets?.length === 0
-                }
-                onClick={claimWinnings}
-              >
-                <Gem />
-                Claim Winnings
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Claimable:{" "}
-              <span className="text-accent font-semibold">
-                {claimableAmount.toNumber() / LAMPORTS_PER_SOL}
-              </span>{" "}
-              SOL
-            </TooltipContent>
-          </Tooltip>
+                  {netPnL.gt(new BN(0)) ? "+" : netPnL.eq(new BN(0)) ? "" : "-"}
+                  {parseLamportsToSol(netPnL.toString())} SOL
+                </span>
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2 px-1">
+            <Select
+              value={filter}
+              onValueChange={(value) => setFilter(value as FilterValue)}
+            >
+              <SelectTrigger className="w-fit min-w-[100px] cursor-pointer">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                {filterOptions.map((option) => (
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className="cursor-pointer"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="cursor-pointer"
+                  disabled={
+                    !publicKey ||
+                    isSendingTransaction ||
+                    claimableBets?.length === 0
+                  }
+                  onClick={claimWinnings}
+                >
+                  <Gem />
+                  Claim Winnings
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Claimable:{" "}
+                <span className="text-accent font-semibold">
+                  {claimableAmount.toNumber() / LAMPORTS_PER_SOL}
+                </span>{" "}
+                SOL
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
       <Table>

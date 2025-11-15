@@ -15,14 +15,22 @@ import { BetHistory } from "@/components/BetHistory";
 function Main() {
   return (
     <section className="flex flex-col gap-8 py-4 w-fit items-center">
+      <div className="flex flex-col items-center">
+        <p>Roulette is scrollable.</p>
+        <p>Switch to desktop for better experience.</p>
+      </div>
       <section className="flex xl:flex-row flex-col gap-8 items-start">
-        <RouletteTable />
-        <section className="flex flex-col xl:flex-col lg:flex-row gap-4 xl:justify-between w-full">
+        <div className="flex sm:justify-center max-w-screen scale-85 sm:scale-90 md:scale-100 lg:px-6 overflow-x-auto sm:overflow-x-visible">
+          <RouletteTable />
+        </div>
+        <section className="flex px-2 flex-col xl:flex-col lg:flex-row gap-4 xl:justify-between w-full">
           <RoundInfo />
           <PlaceBetSection />
         </section>
       </section>
-      <BetHistory />
+      <div className="flex max-w-screen sm:w-full overflow-scroll sm:overflow-hidden">
+        <BetHistory />
+      </div>
     </section>
   );
 }
