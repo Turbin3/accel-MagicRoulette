@@ -16,6 +16,40 @@ Perpetual roulette game for [Turbin3 Accelerated Builders Cohort](https://turbin
 
 - [![Bun](https://img.shields.io/badge/Bun-000?style=for-the-badge&logo=bun)](https://bun.sh/)
 
+## Architecture Diagram
+
+### Account Relationship Diagram
+
+![Account Relationship Diagram](./architecture_diagrams/account_relationship_diagram.png)
+
+### Initialize Table
+
+![Initialize Table](./architecture_diagrams/initialize_table.png)
+
+### Place Bet
+
+![Place Bet](./architecture_diagrams/place_bet.png)
+
+### Spin Roulette
+
+![Spin Roulette](./architecture_diagrams/spin_roulette.png)
+
+### Advance Round
+
+![Advance Round](./architecture_diagrams/advance_round.png)
+
+### Claim Winnings
+
+![Claim Winnings](./architecture_diagrams/claim_winnings.png)
+
+### Update Table
+
+![Update Table](./architecture_diagrams/update_table.png)
+
+### Withdraw Vault
+
+![Withdraw Vault](./architecture_diagrams/withdraw_vault.png)
+
 ## Getting Started
 
 ### Prerequisites
