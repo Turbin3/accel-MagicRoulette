@@ -18,6 +18,10 @@ Perpetual roulette game for [Turbin3 Accelerated Builders Cohort](https://turbin
 
 ## Architecture Diagram
 
+### High Level Flow
+
+![High Level Flow](./architecture_diagrams/high_level_flow.png)
+
 ### Account Relationship Diagram
 
 ![Account Relationship Diagram](./architecture_diagrams/account_relationship_diagram.png)
