@@ -14,6 +14,7 @@ import idl from "../target/idl/magic_roulette.json";
 import { defundAccount, fundAccounts, skipBetAccIfExists } from "./utils";
 import { sleep } from "bun";
 import { isWinner } from "./bet-type";
+import { BASE_TX_FEE } from "./constants";
 
 type BetType = IdlTypes<MagicRoulette>["betType"];
 
@@ -283,6 +284,29 @@ describe("magic-roulette", () => {
         }
       })
     );
+  });
+
+  test("withdraw from vault", async () => {
+    const minRent = await connection.getMinimumBalanceForRentExemption(0);
+    const preVaultBal = await provider.connection.getBalance(vaultPda);
+    const preAdminBal = await provider.connection.getBalance(wallet.publicKey);
+    const withdrawAmount = (preVaultBal - minRent) / 2; // withdraw half of vault balance
+
+    await program.methods
+      .withdrawVault(new BN(withdrawAmount))
+      .accounts({
+        admin: wallet.publicKey,
+      })
+      .signers([wallet.payer])
+      .rpc();
+
+    const postAdminBal = await provider.connection.getBalance(wallet.publicKey);
+
+    expect(preAdminBal).toBe(postAdminBal - withdrawAmount + BASE_TX_FEE);
+
+    const postVaultBal = await provider.connection.getBalance(vaultPda);
+
+    expect(preVaultBal).toBe(postVaultBal + withdrawAmount);
   });
 
   afterAll(async () => {
