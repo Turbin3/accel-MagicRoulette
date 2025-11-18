@@ -94,7 +94,7 @@ export function RoundsProvider({
     tableData && new BN(tableData.currentRoundNumber).gtn(1);
 
   const currentRound =
-    roundsData && isNotFirstRound
+    roundsData && tableData
       ? roundsData.find(
           (round) => round.roundNumber === tableData.currentRoundNumber
         ) || null
