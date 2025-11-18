@@ -8,7 +8,7 @@ import {
   Wallet,
 } from "@coral-xyz/anchor";
 import { Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
-import { BN } from "bn.js";
+import { BN } from "@coral-xyz/anchor";
 import { MagicRouletteClient } from "./client";
 import idl from "../target/idl/magic_roulette.json";
 import { defundAccount, fundAccounts, skipBetAccIfExists } from "./utils";
